@@ -14,7 +14,8 @@
       "installDir": "${sourceDir}/build/install/${presetName}",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl.exe",
-        "CMAKE_CXX_COMPILER": "cl.exe"
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       },
       "condition": {
         "type": "equals",
@@ -31,12 +32,11 @@
         "strategy": "external"
       },
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+        "CMAKE_BUILD_TYPE": "Debug"
       },
       "vendor": {
         "microsoft.com/VisualStudio/target": "Specter",
-        "microsoft.com/VisualStudio/startupItem": "Specter.exe"
+        "microsoft.com/VisualStudio/startupItem": "main.cpp"
       }
     },
     {
@@ -54,7 +54,25 @@
       },
       "vendor": {
         "microsoft.com/VisualStudio/target": "Specter",
-        "microsoft.com/VisualStudio/startupItem": "Specter.exe"
+        "microsoft.com/VisualStudio/startupItem": "main.cpp"
+      }
+    },
+    {
+      "name": "x64-relwithdebinfo",
+      "displayName": "x64 RelWithDebInfo",
+      "inherits": "windows-base",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "/O2 /Zi /Ob1 /DNDEBUG /MP",
+        "CMAKE_C_FLAGS_RELWITHDEBINFO": "/O2 /Zi /Ob1 /DNDEBUG /MP"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudio/target": "Specter",
+        "microsoft.com/VisualStudio/startupItem": "main.cpp"
       }
     }
   ],
@@ -69,6 +87,12 @@
       "name": "x64-release",
       "configurePreset": "x64-release",
       "description": "Сборка x64 Release с полной оптимизацией",
+      "jobs": 4
+    },
+    {
+      "name": "x64-relwithdebinfo",
+      "configurePreset": "x64-relwithdebinfo",
+      "description": "Сборка x64 с отладочной информацией и оптимизацией",
       "jobs": 4
     }
   ]

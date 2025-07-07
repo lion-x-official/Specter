@@ -1,6 +1,12 @@
 ﻿#pragma once
 #include <iostream>
 
+#include "core/logger.hpp"
+#include "core/memory.hpp"
+
+#include <chrono>
+#include <thread>
+
 void LoggerInit() {
     Logger& logger = Logger::GetInstance();
     logger.SetLogFile("logs.txt");

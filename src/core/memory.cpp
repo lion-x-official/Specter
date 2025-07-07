@@ -1,4 +1,4 @@
-#include "memory.hpp"
+#include "core/memory.hpp"
 #include <stdexcept>
 
 Memory::Memory(const std::wstring& processName) : processName_(processName), processHandle_(nullptr), processId_(0) {}
