@@ -14,3 +14,10 @@ CMakeUserPresets.json
 # Visual Studio Files and Folders
 .vs/
 build/
+.vscode/
+*.sln
+*.vcxproj*
+*.obj
+*.pdb
+*.log
+*.exe
