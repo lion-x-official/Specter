@@ -69,3 +69,14 @@ uintptr_t Memory::GetModuleBase(const std::wstring& moduleName) const {
     CloseHandle(snapshot);
     return baseAddress;
 }
+
+bool Memory::IsProcessRunning() const {
+    if (!processHandle_) {
+        return false;
+    }
+    DWORD exitCode;
+    if (GetExitCodeProcess(processHandle_, &exitCode)) {
+        return exitCode == STILL_ACTIVE;
+    }
+    return false;
+}
