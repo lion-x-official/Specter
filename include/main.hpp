@@ -25,7 +25,7 @@ void LoggerInit(Logger& logger) {
     logger.Log(LogLevel::DEBUG, L"logger.cpp", 36, L"Log file created successfully -> +logs.txt");
 }
 
-bool ProcessCheck(Logger& logger);
+bool ProcessCheck(Logger& logger, Memory& memory);
 
 void exitSpecter(Logger& logger) {
     logger.Log(LogLevel::INFO, L"Exiting Specter...");

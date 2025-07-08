@@ -5,7 +5,7 @@
 constexpr auto FILE_NAME = L"main.cpp";
 constexpr auto LOG_FILE = L"logs.txt";
 constexpr auto LOG_FORMAT = L"{timestamp} | {level} | {source} | {message}";
-constexpr auto LOG_LEVEL = LogLevel::INFO; // Change to LogLevel::INFO for production
+constexpr auto LOG_LEVEL = LogLevel::DEBUG; // Change to LogLevel::INFO for production
 
 int main()
 {
@@ -24,40 +24,48 @@ int main()
 	// Memory
 	Memory memory = Memory(L"cs2.exe");
 	logger.Log(LogLevel::DEBUG, FILE_NAME, L"Memory init for 'cs2.exe'");
-	memory.Attach();
-	logger.Log(LogLevel::DEBUG, FILE_NAME, L"Memory attached to 'cs2.exe'");
 
-	if (!ProcessCheck(logger))
+	// Vars
+	uint32_t processId;
+
+	logger.Log(LogLevel::INFO, FILE_NAME, L"Checking for the process...");
+	if (!ProcessCheck(logger, memory))
 	{
-		logger.Log(LogLevel::ERR, FILE_NAME, L"Process not found! Exiting...");
+		logger.Log(LogLevel::ERR, FILE_NAME, L"Process not found!");
 		exitSpecter(logger);
 		return EXIT_FAILURE; // Exit if the process is not found
 	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+	processId = memory.GetProcessId();
+
+	logger.Log(LogLevel::INFO, FILE_NAME, L"Process found! " + memory.GetProcessName() + L" -> " + std::to_wstring(processId));
+
 
 	logger.Log(L"Press any key to exit the Specter");
 	system("pause > nil");
 	return 0;
 }
 
-bool ProcessCheck(Logger& logger)
+bool ProcessCheck(Logger& logger, Memory& memory)
 {
 	logger.Log(LogLevel::INFO, L"Checking if the process is running...");
 	uint8_t attempts = 0;
 	uint8_t maxAttempts = 10; // Maximum attempts to check for the process
-	// Checking if the process is running
 	while(attempts < maxAttempts)
 	{
 		// Attempt to get a handle to the process
 		// If the handle is not null, the process is running
-		if (GetModuleHandle("cs2.exe") != nullptr)
+		if (memory.Attach() && memory.GetProcessId())
 		{
-			logger.Log(LogLevel::INFO,L"Founded process!", L"Process is running.");
+			logger.Log(LogLevel::INFO,L"ProcessCheck", L"Process is running.");
+			logger.Log(LogLevel::DEBUG, L"ProcessCheck", L"Process ID: " + std::to_wstring(memory.GetProcessId()));
 			return true; // Process is running
 		}
 		else
 		{
 			attempts++;
-			logger.Log(LogLevel::INFO, L"Process not found, checking again... " + std::to_wstring(attempts));
+			logger.Log(LogLevel::INFO, L"Process not found, checking again... " + std::to_wstring(attempts) + L"/" + std::to_wstring(maxAttempts));
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Wait for 1 second before checking again
 		}
 	}
