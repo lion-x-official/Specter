@@ -11,7 +11,6 @@
 void LoggerInit(Logger& logger) {
 	system("cls");
     logger.SetLogFile("logs.txt");
-    logger.SetLogFormat("{timestamp} | {level} | {source} | {message}");
 
     logger.Log(LogLevel::INFO, L"logger.cpp", L"Logger successfully initialized!");
     std::this_thread::sleep_for(std::chrono::milliseconds(600));
