@@ -4,6 +4,7 @@
 #include "core/logger.hpp"
 #include "core/memory.hpp"
 #include "core/utils.hpp"
+#include "offsets.hpp"
 
 #include <chrono>
 #include <thread>

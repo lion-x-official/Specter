@@ -46,10 +46,10 @@ bool ProcessCheck(Logger& logger, Memory& memory)
 	return false; // Process not found after maximum attempts
 }
 
-bool MainMenuCheck(Memory& memory) {
+bool MainMenuCheck(Memory &memory) {
 	// Process Checks
-	if (!memory.Attach()) return false;
 	if (memory.GetProcessId() == 0) return false;
+	if (memory.GetProcessHandle() == nullptr) return false;
 
 	// Checking client_dll (loads in main menu)
 	if (memory.GetModuleBase(memory.GetProcessId(), L"client.dll") == 0) {

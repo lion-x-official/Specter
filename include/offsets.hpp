@@ -7,8 +7,7 @@
 
 // game offsets
 namespace Offsets {
-	DWORD64 client_dll;
+    extern DWORD64 client_dll;
 
-
-	bool UpdateOffsets();
+    bool UpdateOffsets();
 }

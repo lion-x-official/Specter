@@ -41,8 +41,15 @@ int main()
 
 	logger.Log(LogLevel::INFO, FILE_NAME, L"Process found! " + memory.GetProcessName() + L" -> " + std::to_wstring(processId));
 
+	logger.Log(LogLevel::INFO, FILE_NAME, L"Checking for main menu...");
+	while (!MainMenuCheck(memory))
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Wait for 1 second before checking again
+	}
+	logger.Log(LogLevel::INFO, FILE_NAME, L"Main menu found!");
+
 
 	logger.Log(L"Press any key to exit the Specter");
-	system("pause > NULL");
+	system("pause > nul");
 	return 0;
 }
