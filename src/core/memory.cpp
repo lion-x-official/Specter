@@ -32,6 +32,10 @@ bool Memory::Attach() {
     }
 
     processHandle_ = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION, FALSE, processId_);
+    if (processHandle_ == INVALID_HANDLE_VALUE) {
+        processHandle_ = nullptr; // Ensure it is set to nullptr for safe cleanup
+        return false;
+    }
     return processHandle_ != nullptr;
 }
 
