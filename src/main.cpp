@@ -43,6 +43,6 @@ int main()
 
 
 	logger.Log(L"Press any key to exit the Specter");
-	system("pause > nil");
+	system("pause > NULL");
 	return 0;
 }
