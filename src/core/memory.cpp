@@ -49,9 +49,9 @@ bool Memory::WriteMemory(uintptr_t address, const void* buffer, size_t size) con
     return WriteProcessMemory(processHandle_, reinterpret_cast<LPVOID>(address), buffer, size, nullptr) != 0;
 }
 
-uintptr_t Memory::GetModuleBase(const std::wstring& moduleName) const {
+uintptr_t Memory::GetModuleBase(DWORD processId, const std::wstring& moduleName) const {
     MODULEENTRY32W entry = { sizeof(MODULEENTRY32W) };
-    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, processId_);
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, processId);
     if (snapshot == INVALID_HANDLE_VALUE) {
         return 0;
     }
@@ -79,4 +79,23 @@ bool Memory::IsProcessRunning() const {
         return exitCode == STILL_ACTIVE;
     }
     return false;
+}
+
+std::vector<MODULEENTRY32W> Memory::GetProcessModules() const {
+    std::vector<MODULEENTRY32W> modules;
+    MODULEENTRY32W entry = { sizeof(MODULEENTRY32W) };
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, processId_);
+
+    if (snapshot == INVALID_HANDLE_VALUE) {
+        return modules;
+    }
+
+    if (Module32FirstW(snapshot, &entry)) {
+        do {
+            modules.push_back(entry);
+        } while (Module32NextW(snapshot, &entry));
+    }
+
+    CloseHandle(snapshot);
+    return modules;
 }
