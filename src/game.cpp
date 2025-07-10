@@ -12,13 +12,12 @@ bool Game::Initialize(ProcessHelper& memory)
 DWORD64 Game::GetLocalPlayerPawn(ProcessHelper& memory)
 {
 	DWORD64 localPlayerPawn = NULL;
-	memory.ReadMemory(Offsets::client_dll + Offsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
-	if (localPlayerPawn <= 0) return 0; // Ensure the local player pawn is valid
-	return localPlayerPawn;  // Return localplayerpawn address
+    memory.ReadMemory(Offsets::client_dll + Offsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
+	return localPlayerPawn; // Return the local player pawn address
 }
 
 bool Game::Update(ProcessHelper& memory) {
-    DWORD64 localPlayerPawn = 0;
+    DWORD64 localPlayerPawn = NULL;
 	int32_t health = 0;
     int32_t maxHealth = 0;
     uint8_t teamNum = 0;
@@ -41,6 +40,6 @@ bool Game::Update(ProcessHelper& memory) {
         GameVars::LocalPlayerPawn::maxHealth = 0;
         GameVars::LocalPlayerPawn::teamNum = 0;
         GameVars::LocalPlayerPawn::flags = 0;
-	}
-	return localPlayerPawn > 0; // Return true if local player pawn is valid
+    }
+    return localPlayerPawn != 0; // Return true if local player pawn is valid
 }

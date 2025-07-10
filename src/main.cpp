@@ -5,7 +5,7 @@
 constexpr auto FILE_NAME = L"main.cpp";
 constexpr auto LOG_FILE = L"logs.txt";
 constexpr auto LOG_FORMAT = L"{timestamp} | {level} | {source} | {message}";
-constexpr auto LOG_LEVEL = LogLevel::INFO; // Change to LogLevel::INFO for production
+constexpr auto LOG_LEVEL = LogLevel::INFO; // Change to LogLevel::INFO for production  Change to LogLevel::DEBUG for development
 
 int main()
 {
@@ -66,6 +66,7 @@ int main()
 	std::this_thread::sleep_for(std::chrono::milliseconds(700));
 
 	logger.Log(LogLevel::INFO, FILE_NAME, L"Waiting for full main menu.");
+	std::this_thread::sleep_for(std::chrono::seconds(8));
 
 
 	// Update Offsets
@@ -108,13 +109,11 @@ int main()
 			break; // Exit the loop if the process is not running
 		}
 
-		if (!Game::Update(memory))
-		{
-			logger.Log(LogLevel::ERR, FILE_NAME, L"Failed to update game variables! Exiting...");
-			break; // Exit the loop if the game variables cannot be updated
-		}
+		Game::Update(memory);
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		logger.Log(LogLevel::INFO, L"Game", L"Local Player Health: " + std::to_wstring(GameVars::LocalPlayerPawn::health));
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 
 
