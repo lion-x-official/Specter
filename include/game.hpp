@@ -9,4 +9,4 @@ class Game{
 public:
 	static bool Initialize(ProcessHelper& memory);
 	static DWORD64 GetLocalPlayerPawn(ProcessHelper& memory);
-}
+};

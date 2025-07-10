@@ -11,5 +11,8 @@ bool Game::Initialize(ProcessHelper& memory)
 
 DWORD64 Game::GetLocalPlayerPawn(ProcessHelper& memory)
 {
-	return DWORD64();
+	DWORD64 localPlayerPawn = NULL;
+	memory.ReadMemory(Offsets::client_dll + Offsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
+	if (localPlayerPawn <= 0) return 0; // Ensure the local player pawn is valid
+	return localPlayerPawn;  // Return localplayerpawn address
 }

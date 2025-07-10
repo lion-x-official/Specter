@@ -107,6 +107,9 @@ int main()
 			logger.Log(LogLevel::INFO, FILE_NAME, L"CS2 process not found! Exiting...");
 			break; // Exit the loop if the process is not running
 		}
+
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 
 
