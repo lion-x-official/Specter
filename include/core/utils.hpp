@@ -45,22 +45,29 @@ uint8_t CheckSystemArchitecture() {
 void ExitSpecter(Logger& logger) {
 	logger.Log(LogLevel::INFO, L"Exiting Specter...");
 	std::this_thread::sleep_for(std::chrono::milliseconds(500));
-	logger.Log(L"Press any key to exit the Specter");
+	logger.Log(L"Press any key to exit the Specter...");
 	system("pause > nul");
 }
 
 void LoggerInit(Logger& logger) {
 	system("cls");
-	logger.SetLogFile("logs.txt");
-
-	logger.Log(LogLevel::INFO, L"logger.cpp", L"Logger successfully initialized!");
 	std::this_thread::sleep_for(std::chrono::milliseconds(600));
 
-	logger.DeleteLogFile("logs.txt");
-	logger.Log(LogLevel::DEBUG, L"logger.cpp", 32, L"Log file deleted -> -logs.txt");
-	std::this_thread::sleep_for(std::chrono::milliseconds(1200));
+	if (logger.IsLogFileExists("logs.txt")) {
+		logger.Log(LogLevel::DEBUG, L"logger.cpp", 24, L"Log file exists -> logs.txt");
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		logger.DeleteLogFile("logs.txt");
+		logger.Log(LogLevel::DEBUG, L"logger.cpp", 32, L"Log file deleted -> -logs.txt");
+		std::this_thread::sleep_for(std::chrono::milliseconds(1200));
+	} else {
+		logger.Log(LogLevel::DEBUG, L"logger.cpp", 26, L"Log file does not exist -> logs.txt");
+	}
 
 	logger.CreateLogFile("logs.txt");
 	std::this_thread::sleep_for(std::chrono::milliseconds(60));
 	logger.Log(LogLevel::DEBUG, L"logger.cpp", 36, L"Log file created successfully -> +logs.txt");
+
+	logger.SetLogFile("logs.txt");
+
+	logger.Log(LogLevel::INFO, L"logger.cpp", L"Logger successfully initialized!");
 }

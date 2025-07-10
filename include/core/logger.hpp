@@ -34,6 +34,8 @@ public:
     void CreateLogFile(const std::string& filename);
     // Delete the current log file (if open) or by filename
     bool DeleteLogFile(const std::string& filename);
+    // Check if a log file exists
+    bool IsLogFileExists(const std::string& filename) const;
 
 private:
     Logger();

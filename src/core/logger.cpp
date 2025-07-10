@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <locale>
 #include <codecvt>
+#include <fstream>
 
 Logger& Logger::GetInstance() {
     static Logger instance;
@@ -60,10 +61,16 @@ bool Logger::DeleteLogFile(const std::string& filename) {
     }
     if (std::remove(filename.c_str()) == 0) {
         return true;
-    } else {
+    }
+    else {
         std::wcerr << L"Failed to delete log file: " << std::wstring(filename.begin(), filename.end()) << std::endl;
         return false;
     }
+}
+
+bool Logger::IsLogFileExists(const std::string& filename) const {
+    std::ifstream file(filename);
+    return file.good();
 }
 
 void Logger::SetMinLogLevel(LogLevel level) {
@@ -157,7 +164,7 @@ void Logger::ProcessLogQueue() {
 
                 std::wstring consoleMessage;
                 if (!entry.file.empty() && entry.line > 0) {
-                    consoleMessage = timestampColor + L"[" + entry.timestamp + L"]" + resetCode + L" " +
+                        consoleMessage = timestampColor + L"[" + entry.timestamp + L"]" + resetCode + L" " +
                         fileColor + entry.file + L":" + std::to_wstring(entry.line) + resetCode + L" " +
                         colorCode + L"[" + LogLevelToString(entry.level) + L"] " + entry.message + resetCode;
                 }
