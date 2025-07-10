@@ -5,13 +5,13 @@
 constexpr auto FILE_NAME = L"main.cpp";
 constexpr auto LOG_FILE = L"logs.txt";
 constexpr auto LOG_FORMAT = L"{timestamp} | {level} | {source} | {message}";
-constexpr auto LOG_LEVEL = LogLevel::DEBUG; // Change to LogLevel::INFO for production
+constexpr auto LOG_LEVEL = LogLevel::INFO; // Change to LogLevel::INFO for production
 
 int main()
 {
 	Logger& logger = Logger::GetInstance();
-	LoggerInit(logger);
 	logger.SetMinLogLevel(LOG_LEVEL); // Updated to use LOG_LEVEL constant
+	LoggerInit(logger);
 	logger.Log(LogLevel::INFO, L"Minimum LogLevel: " + std::to_wstring(static_cast<int>(LOG_LEVEL)));
 
 	logger.Log(LogLevel::INFO, FILE_NAME, L"Logger successfully initialized!");
