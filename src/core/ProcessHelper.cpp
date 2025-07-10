@@ -1,4 +1,4 @@
-#include "core/memory.hpp"
+#include "core/ProcessHelper.hpp"
 #include <stdexcept>
 
 ProcessHelper::ProcessHelper(const std::wstring& processName) : processName_(processName), processHandle_(nullptr), processId_(0) {}

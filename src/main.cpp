@@ -42,32 +42,29 @@ int main()
 	// Vars
 	uint32_t processId;
 
-
-	logger.Log(LogLevel::INFO, FILE_NAME, L"Waiting for CS2...");
-	if (!ProcessCheck(memory))
-	{
-		logger.Log(LogLevel::ERR, FILE_NAME, L"Process not found!");
-		ExitSpecter(logger);
-		return EXIT_FAILURE; // Exit if the process is not found
-	}
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	system("cls");
+	// checking for process
+    logger.Log(LogLevel::INFO, FILE_NAME, L"Waiting for CS2...");
+    while (!ProcessCheck(memory))
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	processId = memory.GetProcessId();
 	logger.Log(LogLevel::DEBUG, FILE_NAME, L"Process found! " + memory.GetProcessName() + L" -> " + std::to_wstring(memory.GetProcessId()));
-	logger.Log(LogLevel::INFO, FILE_NAME, memory.GetProcessName() + L" process found! ");
 	std::this_thread::sleep_for(std::chrono::milliseconds(600));
 
 
-	logger.Log(LogLevel::INFO, FILE_NAME, L"Checking for main menu...");
+	logger.Log(LogLevel::DEBUG, FILE_NAME, L"Checking for main menu...");
 	while (!MainMenuCheck(memory))
 	{
 		logger.Log(LogLevel::DEBUG, L"MainMenuCheck", L"Searching for main menu");
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Wait for 1 second before checking again
+		std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Wait for 0.5 second before checking again
 	}
 	std::this_thread::sleep_for(std::chrono::milliseconds(700));
-	logger.Log(LogLevel::INFO, L"MainMenuCheck", L"Main menu found!");
+	logger.Log(LogLevel::DEBUG, L"MainMenuCheck", L"Main menu found!");
+	logger.Log(LogLevel::INFO, FILE_NAME, L"CS2 found!");
 
+	// Update Offsets
 	logger.Log(LogLevel::INFO, L"Offset Updater", L"Updating offsets...");
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	while (!Offsets::UpdateOffsets(memory))
@@ -77,6 +74,7 @@ int main()
 	}
 	logger.Log(LogLevel::INFO, L"Offset Updater", L"Offsets updated!");
 
+	// Log updated offsets
 	std::wstringstream ss;
 	ss.imbue(std::locale::classic());
 	ss << L"client.dll -> 0x" << std::hex << std::setw(16) << std::setfill(L'0') << Offsets::client_dll;
@@ -84,6 +82,31 @@ int main()
 	ss.clear();
 
 
+	// Main loop
+	while (true)
+	{
+		if (memory.IsProcessRunning()) {
+			if (memory.GetProcessId() != processId)
+			{
+				logger.Log(LogLevel::DEBUG, FILE_NAME, L"Process ID changed! Updating...");
+				processId = memory.GetProcessId();
+				logger.Log(LogLevel::DEBUG, FILE_NAME, L"New Process ID: " + std::to_wstring(processId));
+			}
+			if (!Offsets::UpdateOffsets(memory))
+			{
+				logger.Log(LogLevel::ERR, L"Offset Updater", L"Failed to update offsets! Exiting...");
+				break; // Exit the loop if offsets cannot be updated
+			}
+		}
+		else
+		{
+			logger.Log(LogLevel::INFO, FILE_NAME, L"CS2 process not found! Exiting...");
+			break; // Exit the loop if the process is not running
+		}
+	}
+
+
+	// Exit
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	ExitSpecter(logger);
 	return 0;

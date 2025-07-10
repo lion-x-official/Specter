@@ -7,20 +7,10 @@
 
 bool ProcessCheck(ProcessHelper& memory)
 {
-	while (true)
-	{
-		// Attempt to get a handle to the process
-		// If the handle is not null, the process is running
-		if (memory.Attach() && memory.GetProcessId())
-		{
-			return true; // Process is running
-		}
-		else
-		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Wait for 1 second before checking again
-		}
-	}
-	return false; // Process not found
+	// Attempt to get a handle to the process
+	// If the handle is not null, the process is running
+	if (memory.Attach() && memory.GetProcessId()) return true; // Process is running
+	else return false; // Process not found
 }
 
 bool MainMenuCheck(ProcessHelper& memory) {
