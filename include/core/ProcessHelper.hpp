@@ -4,15 +4,15 @@
 #include <string>
 #include <vector>
 
-class Memory {
+class ProcessHelper {
 public:
-    Memory(const std::wstring& processName);
-    ~Memory();
+    ProcessHelper(const std::wstring& processName);
+    ~ProcessHelper();
 
     bool Attach();
     bool ReadMemory(uintptr_t address, void* buffer, size_t size) const;
     bool WriteMemory(uintptr_t address, const void* buffer, size_t size) const;
-    uintptr_t GetModuleBase(DWORD processId ,const std::wstring& moduleName) const;
+    uintptr_t GetModuleBase(DWORD processId, const std::wstring& moduleName) const;
     bool IsProcessRunning() const;
     DWORD GetProcessId() const { return processId_; }
     HANDLE GetProcessHandle() const { return processHandle_; }

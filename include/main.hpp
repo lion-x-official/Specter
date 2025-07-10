@@ -7,6 +7,6 @@
 #include <cstdint>
 
 #include "core/logger.hpp"
-#include "core/memory.hpp"
+#include "core/ProcessHelper.hpp"
 #include "core/utils.hpp"
-#include "offsets.hpp"
+#include "utils/offsets.hpp"

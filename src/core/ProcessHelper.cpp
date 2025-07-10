@@ -1,15 +1,15 @@
 #include "core/memory.hpp"
 #include <stdexcept>
 
-Memory::Memory(const std::wstring& processName) : processName_(processName), processHandle_(nullptr), processId_(0) {}
+ProcessHelper::ProcessHelper(const std::wstring& processName) : processName_(processName), processHandle_(nullptr), processId_(0) {}
 
-Memory::~Memory() {
+ProcessHelper::~ProcessHelper() {
     if (processHandle_) {
         CloseHandle(processHandle_);
     }
 }
 
-bool Memory::Attach() {
+bool ProcessHelper::Attach() {
     PROCESSENTRY32W entry = { sizeof(PROCESSENTRY32W) };
     HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (snapshot == INVALID_HANDLE_VALUE) {
@@ -39,21 +39,21 @@ bool Memory::Attach() {
     return processHandle_ != nullptr;
 }
 
-bool Memory::ReadMemory(uintptr_t address, void* buffer, size_t size) const {
+bool ProcessHelper::ReadMemory(uintptr_t address, void* buffer, size_t size) const {
     if (!processHandle_) {
         return false;
     }
     return ReadProcessMemory(processHandle_, reinterpret_cast<LPCVOID>(address), buffer, size, nullptr) != 0;
 }
 
-bool Memory::WriteMemory(uintptr_t address, const void* buffer, size_t size) const {
+bool ProcessHelper::WriteMemory(uintptr_t address, const void* buffer, size_t size) const {
     if (!processHandle_) {
         return false;
     }
     return WriteProcessMemory(processHandle_, reinterpret_cast<LPVOID>(address), buffer, size, nullptr) != 0;
 }
 
-uintptr_t Memory::GetModuleBase(DWORD processId, const std::wstring& moduleName) const {
+uintptr_t ProcessHelper::GetModuleBase(DWORD processId, const std::wstring& moduleName) const {
     MODULEENTRY32W entry = { sizeof(MODULEENTRY32W) };
     HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, processId);
     if (snapshot == INVALID_HANDLE_VALUE) {
@@ -74,7 +74,7 @@ uintptr_t Memory::GetModuleBase(DWORD processId, const std::wstring& moduleName)
     return baseAddress;
 }
 
-bool Memory::IsProcessRunning() const {
+bool ProcessHelper::IsProcessRunning() const {
     if (!processHandle_) {
         return false;
     }
@@ -85,7 +85,7 @@ bool Memory::IsProcessRunning() const {
     return false;
 }
 
-std::vector<MODULEENTRY32W> Memory::GetProcessModules() const {
+std::vector<MODULEENTRY32W> ProcessHelper::GetProcessModules() const {
     std::vector<MODULEENTRY32W> modules;
     MODULEENTRY32W entry = { sizeof(MODULEENTRY32W) };
     HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, processId_);

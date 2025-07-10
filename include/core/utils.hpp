@@ -3,33 +3,27 @@
 #include <Windows.h>
 
 #include "logger.hpp"
-#include "memory.hpp"
+#include "ProcessHelper.hpp"
 
-bool ProcessCheck(Logger& logger, Memory& memory)
+bool ProcessCheck(ProcessHelper& memory)
 {
-	uint8_t attempts = 0;
-	uint8_t maxAttempts = 10; // Maximum attempts to check for the process
-	while (attempts < maxAttempts)
+	while (true)
 	{
 		// Attempt to get a handle to the process
 		// If the handle is not null, the process is running
 		if (memory.Attach() && memory.GetProcessId())
 		{
-			logger.Log(LogLevel::DEBUG, L"ProcessCheck", L"Process ID: " + std::to_wstring(memory.GetProcessId()));
 			return true; // Process is running
 		}
 		else
 		{
-			attempts++;
-			logger.Log(LogLevel::INFO, L"Process not found, checking again... " + std::to_wstring(attempts) + L"/" + std::to_wstring(maxAttempts));
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Wait for 1 second before checking again
 		}
 	}
-	logger.Log(LogLevel::ERR, L"Process not found after maximum attempts!");
-	return false; // Process not found after maximum attempts
+	return false; // Process not found
 }
 
-bool MainMenuCheck(Memory& memory) {
+bool MainMenuCheck(ProcessHelper& memory) {
 	// Process Checks
 	if (memory.GetProcessId() == 0) return false;
 	if (memory.GetProcessHandle() == nullptr) return false;
@@ -48,13 +42,13 @@ uint8_t CheckSystemArchitecture() {
 	GetNativeSystemInfo(&sysInfo);
 
 	if (sysInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
-		return 64; // 64-bit
+		return 64; // 64-bit supported arch
 	}
 	else if (sysInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL) {
-		return 32; // 32-bit unsupported
+		return 32; // 32-bit unsupported arch
 	}
 	else {
-		return 11; // Unsupported
+		return 11; // Unsupported arch
 	}
 }
 

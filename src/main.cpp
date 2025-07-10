@@ -35,7 +35,7 @@ int main()
 	logger.Log(LogLevel::DEBUG, FILE_NAME, L"Console cleared");
 
 	// Memory
-	Memory memory = Memory(L"cs2.exe");
+	ProcessHelper memory = ProcessHelper(L"cs2.exe");
 	logger.Log(LogLevel::DEBUG, FILE_NAME, L"Memory init for 'cs2.exe'");
 
 
@@ -43,8 +43,8 @@ int main()
 	uint32_t processId;
 
 
-	logger.Log(LogLevel::INFO, FILE_NAME, L"Checking for the process...");
-	if (!ProcessCheck(logger, memory))
+	logger.Log(LogLevel::INFO, FILE_NAME, L"Waiting for CS2...");
+	if (!ProcessCheck(memory))
 	{
 		logger.Log(LogLevel::ERR, FILE_NAME, L"Process not found!");
 		ExitSpecter(logger);

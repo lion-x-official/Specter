@@ -1,6 +1,6 @@
-#include <offsets.hpp>
+#include <utils/offsets.hpp>
 
-bool Offsets::UpdateOffsets(Memory &memory)
+bool Offsets::UpdateOffsets(ProcessHelper &memory)
 {
 	uint32_t pId = memory.GetProcessId();
     if (pId == 0) return false;
