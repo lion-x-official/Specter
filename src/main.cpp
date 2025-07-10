@@ -108,6 +108,11 @@ int main()
 			break; // Exit the loop if the process is not running
 		}
 
+		if (!Game::Update(memory))
+		{
+			logger.Log(LogLevel::ERR, FILE_NAME, L"Failed to update game variables! Exiting...");
+			break; // Exit the loop if the game variables cannot be updated
+		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
