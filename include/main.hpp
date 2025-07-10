@@ -9,4 +9,4 @@
 #include "core/logger.hpp"
 #include "core/ProcessHelper.hpp"
 #include "core/utils.hpp"
-#include "utils/offsets.hpp"
+#include "game.hpp"

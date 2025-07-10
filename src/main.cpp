@@ -63,6 +63,10 @@ int main()
 	std::this_thread::sleep_for(std::chrono::milliseconds(700));
 	logger.Log(LogLevel::DEBUG, L"MainMenuCheck", L"Main menu found!");
 	logger.Log(LogLevel::INFO, FILE_NAME, L"CS2 found!");
+	std::this_thread::sleep_for(std::chrono::milliseconds(700));
+
+	logger.Log(LogLevel::INFO, FILE_NAME, L"Waiting for full main menu.");
+
 
 	// Update Offsets
 	logger.Log(LogLevel::INFO, L"Offset Updater", L"Updating offsets...");
