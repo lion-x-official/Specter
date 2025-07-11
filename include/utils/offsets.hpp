@@ -16,6 +16,6 @@ namespace Offsets {
     constexpr std::ptrdiff_t m_iMaxHealth = 0x340; // int32
     constexpr std::ptrdiff_t m_iTeamNum = 0x3E3; // uint8
     constexpr std::ptrdiff_t m_fFlags = 0x3EC; // uint32
+    constexpr std::ptrdiff_t m_iIDEntIndex = 0x1458; // CEntityIndex in entitylist
 
-    bool UpdateOffsets(ProcessHelper& memory);
 }
