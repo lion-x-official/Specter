@@ -66,13 +66,9 @@ int main()
 	logger.Log(LogLevel::INFO, FILE_NAME, L"CS2 found!");
 	std::this_thread::sleep_for(std::chrono::milliseconds(700));
 
-	logger.Log(LogLevel::INFO, FILE_NAME, L"Waiting for full main menu.");
-	std::this_thread::sleep_for(std::chrono::seconds(8));
-
-
 	// Game Init
 	logger.Log(LogLevel::INFO, L"Game", L"Game initialization...");
-
+	Game::Initialize(memory);
 
 	// Log updated offsets
 	std::wstringstream ss;
@@ -81,6 +77,13 @@ int main()
 	logger.Log(LogLevel::DEBUG, L"Game", ss.str());
 	ss.clear();
 
+	Game::Update(memory);
+
+	logger.Log(LogLevel::INFO, L"Offsets", L"LocalPlayerPawn -> " + std::to_wstring(GameVars::LocalPlayerPawn::address));
+	logger.Log(LogLevel::INFO, L"Offsets", L"LocalPlayerPawn Health -> " + std::to_wstring(GameVars::LocalPlayerPawn::health));
+	logger.Log(LogLevel::INFO, L"Offsets", L"LocalPlayerPawn MaxHealth -> " + std::to_wstring(GameVars::LocalPlayerPawn::maxHealth));
+	logger.Log(LogLevel::INFO, L"Offsets", L"LocalPlayerPawn TeamNum -> " + std::to_wstring(GameVars::LocalPlayerPawn::teamNum));
+	logger.Log(LogLevel::INFO, L"Offsets", L"LocalPlayerPawn fFlags -> " + std::to_wstring(GameVars::LocalPlayerPawn::flags));
 
 	logger.Log(LogLevel::INFO, L"Game", L"Game initialization successfully!");
 	std::this_thread::sleep_for(std::chrono::seconds(1));

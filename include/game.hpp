@@ -14,6 +14,7 @@ public:
 
 namespace GameVars {
 	namespace LocalPlayerPawn {
+		inline DWORD64 address{ 0 };
 		inline int32_t health{ 0 };
 		inline int32_t maxHealth{ 0 };
 		inline uint8_t teamNum{ 0 };
