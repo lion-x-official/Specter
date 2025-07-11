@@ -70,23 +70,23 @@ int main()
 	std::this_thread::sleep_for(std::chrono::seconds(8));
 
 
-	// Update Offsets
-	logger.Log(LogLevel::INFO, L"Offset Updater", L"Updating offsets...");
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	while (!Offsets::UpdateOffsets(memory))
-	{
-		logger.Log(LogLevel::DEBUG, L"Offset Updater", L"Failed to update offsets! Retrying...");
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Wait for 1 second before retrying
-	}
-	logger.Log(LogLevel::INFO, L"Offset Updater", L"Offsets updated!");
+	// Game Init
+	logger.Log(LogLevel::INFO, L"Game", L"Game initialization...");
+
 
 	// Log updated offsets
 	std::wstringstream ss;
 	ss.imbue(std::locale::classic());
 	ss << L"client.dll -> 0x" << std::hex << std::setw(16) << std::setfill(L'0') << Offsets::client_dll;
-	logger.Log(LogLevel::DEBUG, L"Offset Updater", ss.str());
+	logger.Log(LogLevel::DEBUG, L"Game", ss.str());
 	ss.clear();
 
+
+	logger.Log(LogLevel::INFO, L"Game", L"Game initialization successfully!");
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	logger.Log(LogLevel::INFO, FILE_NAME, L"Loading main loop");
+	std::this_thread::sleep_for(std::chrono::milliseconds(200));
+	system("cls");
 
 	// Main loop
 	while (true)
