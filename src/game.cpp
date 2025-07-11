@@ -18,10 +18,10 @@ DWORD64 Game::GetLocalPlayerPawn(ProcessHelper& memory)
 
 bool Game::Update(ProcessHelper& memory) {
     DWORD64 localPlayerPawn = NULL;
-	int32_t health = 0;
-    int32_t maxHealth = 0;
-    uint8_t teamNum = 0;
-    uint32_t flags = 0;
+	int32_t health = NULL;
+    int32_t maxHealth = NULL;
+    uint8_t teamNum = NULL;
+    uint32_t flags = NULL;
 
     memory.ReadMemory(Offsets::client_dll + Offsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
     if (localPlayerPawn > 0) {

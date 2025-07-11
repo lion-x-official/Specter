@@ -9,6 +9,7 @@ constexpr auto LOG_LEVEL = LogLevel::INFO; // Change to LogLevel::INFO for produ
 
 int main()
 {
+	SetConsoleTitle("Specter - v0.0.5 Pre_Alpha");
 	Logger& logger = Logger::GetInstance();
 	logger.SetMinLogLevel(LOG_LEVEL); // Updated to use LOG_LEVEL constant
 	LoggerInit(logger);
@@ -96,11 +97,6 @@ int main()
 				logger.Log(LogLevel::DEBUG, FILE_NAME, L"Process ID changed! Updating...");
 				processId = memory.GetProcessId();
 				logger.Log(LogLevel::DEBUG, FILE_NAME, L"New Process ID: " + std::to_wstring(processId));
-			}
-			if (!Offsets::UpdateOffsets(memory))
-			{
-				logger.Log(LogLevel::ERR, L"Offset Updater", L"Failed to update offsets! Exiting...");
-				break; // Exit the loop if offsets cannot be updated
 			}
 		}
 		else
