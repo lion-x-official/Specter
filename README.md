@@ -1,6 +1,6 @@
 ﻿# Specter - CS2 External Cheat (Pre-Alpha)
 
-**Specter** is an external cheat for Counter-Strike 2 (CS2), currently in **pre-alpha** (version 0.0.8). This project serves as a prototype for interacting with CS2’s memory to provide cheat functionalities. This release represents a **major update** with significant structural changes and new features.
+**Specter** is an external cheat for Counter-Strike 2 (CS2), currently in **pre-alpha** (version 0.0.9). This project serves as a prototype for interacting with CS2’s memory to provide cheat functionalities. This release represents a **major update** with significant structural changes and new features.
 
 ⚠️ **Disclaimer**: Specter is a proof-of-concept for educational purposes only. Use responsibly and in compliance with game terms of service. The developers are not liable for any misuse or consequences.
 
@@ -40,7 +40,7 @@
    - Check the console for colored logs, player health, and entity positions.
 
 ## Current Status
-- **Version**: 0.0.8 (Pre-Alpha)  
+- **Version**: 0.0.9 (Pre-Alpha)  
 - **Stage**: Prototype with experimental features.  
 - **Known Limitations**:  
   - Requires x64 system.  
