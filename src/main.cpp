@@ -8,11 +8,12 @@
 constexpr auto FILE_NAME = L"main.cpp";
 constexpr auto LOG_FILE = L"logs.txt";
 constexpr auto LOG_FORMAT = L"{timestamp} | {level} | {source} | {message}";
+constexpr auto SPECTER_VERSION = "Specter - v0.0.8 Pre_Alpha";
 
 int main()
 {
     // Set console window title
-    SetConsoleTitle("Specter - v0.0.8 Pre_Alpha");
+    SetConsoleTitle(SPECTER_VERSION);
 
     // Initialize logger singleton and set minimum log level
     Logger& logger = Logger::GetInstance();
