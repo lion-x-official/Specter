@@ -4,6 +4,5 @@ bool Trigger::Update(ProcessHelper& memory) {
 	if (isEnabled) {
 
 	}
-
 	return true;
 }

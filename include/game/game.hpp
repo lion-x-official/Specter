@@ -3,7 +3,7 @@
 #include <Windows.h>
 
 #include "core/ProcessHelper.hpp"
-#include "utils/offsets.hpp"
+#include "valve/offsets.hpp"
 
 class Game{
 public:
@@ -19,5 +19,6 @@ namespace GameVars {
 		inline int32_t maxHealth{ 0 };
 		inline uint8_t teamNum{ 0 };
 		inline uint32_t flags{ 0 };
+		inline float position[3]{ 0.0f, 0.0f, 0.0f }; // m_vOldOrigin
 	}
 }
