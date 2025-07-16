@@ -49,9 +49,6 @@ int main()
     Globals::processHelper = &memory; // Set the global process helper pointer
     logger.Log(LogLevel::DEBUG, FILE_NAME, L"Memory init for 'cs2.exe'");
 
-    // Vars
-    uint32_t processId;
-
     // Wait for CS2 process to start
     logger.Log(LogLevel::INFO, FILE_NAME, L"Waiting for CS2...");
     while (!ProcessCheck())
