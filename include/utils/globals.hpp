@@ -4,16 +4,12 @@
 #include <cstdint>
 #include <vector>
 #include "core/ProcessHelper.hpp"
-#include "core/logger.hpp"
 #include "game/game.hpp"
 #include "game/entity.hpp"
 
 namespace Globals {
     // Mutex for thread-safe access to global data
     inline std::mutex globalMutex;
-
-    // Logging level for the application
-    inline constexpr LogLevel LOG_LEVEL = LogLevel::DEBUG; // Change to LogLevel::INFO for production
 
     // Pointer to ProcessHelper for CS2 process interaction
     inline ProcessHelper* processHelper = nullptr;

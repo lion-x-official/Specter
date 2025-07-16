@@ -71,4 +71,5 @@ Specter is distributed under a **proprietary license**. See the `LICENSE` file f
 Specter is a **pre-alpha prototype** and may contain bugs or incomplete features. Use at your own risk. The developers are not responsible for any consequences, including bans or legal issues.
 
 Thank you for checking out Specter! Feedback is appreciated.  
+
 🔗 [GitHub Repository](https://github.com/lion-x-official/Specter)

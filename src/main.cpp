@@ -8,7 +8,8 @@
 constexpr auto FILE_NAME = L"main.cpp";
 constexpr auto LOG_FILE = L"logs.txt";
 constexpr auto LOG_FORMAT = L"{timestamp} | {level} | {source} | {message}";
-constexpr auto SPECTER_VERSION = "Specter - v0.0.8 Pre_Alpha";
+constexpr auto LOG_LEVEL = LogLevel::INFO; // set minimum log level    change to info for release
+constexpr auto SPECTER_VERSION = "Specter - v0.0.9 Pre_Alpha";
 
 int main()
 {
@@ -17,9 +18,9 @@ int main()
 
     // Initialize logger singleton and set minimum log level
     Logger& logger = Logger::GetInstance();
-    logger.SetMinLogLevel(Globals::LOG_LEVEL); // Use global log level
+    logger.SetMinLogLevel(LOG_LEVEL); // Use global log level
     LoggerInit(logger);
-    logger.Log(LogLevel::INFO, L"Minimum LogLevel: " + std::to_wstring(static_cast<int>(Globals::LOG_LEVEL)));
+    logger.Log(LogLevel::INFO, L"Minimum LogLevel: " + std::to_wstring(static_cast<int>(LOG_LEVEL)));
 
     // Log successful logger initialization
     logger.Log(LogLevel::INFO, FILE_NAME, L"Logger successfully initialized!");

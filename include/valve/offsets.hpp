@@ -10,9 +10,9 @@ namespace Offsets {
     inline uintptr_t client_dll = 0;
 
     namespace MainOffsets {
-        constexpr std::ptrdiff_t dwLocalPlayerPawn = 0x18580D0;
-        constexpr std::ptrdiff_t dwLocalPlayerController = 0x1A52D20;
-        constexpr std::ptrdiff_t dwEntityList = 0x1A044E0;
+        constexpr std::ptrdiff_t dwLocalPlayerPawn = 0x18590D0;
+        constexpr std::ptrdiff_t dwLocalPlayerController = 0x1A53C38;
+        constexpr std::ptrdiff_t dwEntityList = 0x1A05670;
     }
 
     namespace Pawn {
