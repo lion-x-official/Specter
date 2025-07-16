@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include <iostream>
 #include <sstream>
+#include <iostream>
 
 #include <chrono>
 #include <thread>
@@ -8,5 +8,7 @@
 
 #include "core/logger.hpp"
 #include "core/ProcessHelper.hpp"
-#include "core/utils.hpp"
-#include "game.hpp"
+#include "game/game.hpp"
+#include "game/entity.hpp"
+#include "utils/utils.hpp"
+#include "utils/globals.hpp"

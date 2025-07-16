@@ -2,24 +2,25 @@
 #include <cstdint>
 #include <Windows.h>
 
-#include "logger.hpp"
-#include "ProcessHelper.hpp"
+#include "core/logger.hpp"
+#include "core/ProcessHelper.hpp"
+#include "utils/globals.hpp"
 
-bool ProcessCheck(ProcessHelper& memory)
+bool ProcessCheck()
 {
 	// Attempt to get a handle to the process
 	// If the handle is not null, the process is running
-	if (memory.Attach() && memory.GetProcessId()) return true; // Process is running
+	if (Globals::processHelper->Attach() && Globals::processHelper->Attach()) return true; // Process is running
 	else return false; // Process not found
 }
 
-bool MainMenuCheck(ProcessHelper& memory) {
+bool MainMenuCheck() {
 	// Process Checks
-	if (memory.GetProcessId() == 0) return false;
-	if (memory.GetProcessHandle() == nullptr) return false;
+	if (Globals::processHelper->GetProcessId() == 0) return false;
+	if (Globals::processHelper->GetProcessHandle() == nullptr) return false;
 
 	// Checking client_dll (loads in main menu)
-	if (memory.GetModuleBase(memory.GetProcessId(), L"client.dll") == 0) {
+	if (Globals::processHelper->GetModuleBase(Globals::processHelper->GetProcessId(), L"client.dll") == 0) {
 		return false; // client.dll not found, likely not in main menu
 	}
 

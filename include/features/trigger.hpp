@@ -1,8 +1,7 @@
-<<<<<<< Updated upstream
-=======
 #pragma once
 #include "core/ProcessHelper.hpp"
 #include "utils/globals.hpp"
+
 
 class Trigger {
 public:
@@ -16,4 +15,3 @@ public:
 		return Globals::triggerEnabled;
 	}
 };
->>>>>>> Stashed changes

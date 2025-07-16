@@ -32,4 +32,5 @@ namespace Globals {
 
     // Cheat features
     inline bool triggerEnabled = false;
+
 }

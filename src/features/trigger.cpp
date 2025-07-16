@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 #include "features/trigger.hpp"
 
 bool Trigger::Update(ProcessHelper& memory) {
@@ -8,4 +6,3 @@ bool Trigger::Update(ProcessHelper& memory) {
 	}
 	return true;
 }
->>>>>>> Stashed changes
