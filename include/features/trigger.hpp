@@ -1,5 +1,6 @@
 #pragma once
 #include "core/ProcessHelper.hpp"
+#include "game/game.hpp"
 #include "utils/globals.hpp"
 
 
