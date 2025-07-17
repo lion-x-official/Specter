@@ -114,6 +114,9 @@ int main()
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
     system("cls");
 
+    // update thread for game vars updating
+    std::thread updThread(UpdateThread);
+
     // Main loop: runs until F1 is pressed
     while (!GetAsyncKeyState(VK_F1))
     {
@@ -134,10 +137,6 @@ int main()
             break; // Exit the loop if the process is not running
         }
 
-        // Update game and entity list each loop
-        Game::Update(memory);
-        EntityManager::UpdateEntityList(memory);
-
         // Log entity positions and health
         //for (const auto& entity : EntityManager::GetEntities()) {
         //    std::lock_guard<std::mutex> lock(Globals::globalMutex); // Thread safety for entity access
@@ -154,8 +153,26 @@ int main()
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Main loop delay
     }
 
+	updThread.join(); // Wait for the update thread to finish
+
     // Exit sequence
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     ExitSpecter(logger);
     return 0;
+}
+
+
+void UpdateThread()
+{
+    Logger& logger = Logger::GetInstance();
+    while (!GetAsyncKeyState(VK_F1))
+    {
+        Game::Update(*Globals::processHelper);
+        EntityManager::UpdateEntityList(*Globals::processHelper);
+        
+		logger.Log(LogLevel::DEBUG, L"UpdateThread", L"Vars updated");
+
+        // Sleep to reduce CPU usage
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
 }

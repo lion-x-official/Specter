@@ -12,3 +12,5 @@
 #include "game/entity.hpp"
 #include "utils/utils.hpp"
 #include "utils/globals.hpp"
+
+void UpdateThread();
