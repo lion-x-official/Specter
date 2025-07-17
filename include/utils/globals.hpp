@@ -10,6 +10,10 @@
 class Entity;
 
 namespace Globals {
+    // game dll addresses
+    inline uintptr_t client_dll = 0;
+    inline uintptr_t engine2_dll = 0;
+
     // Mutex for thread-safe access to global data
     inline std::mutex globalMutex;
 

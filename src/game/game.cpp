@@ -1,13 +1,22 @@
 #include "game/game.hpp"
 
+
 bool Game::Initialize(ProcessHelper& memory)
 {
 	memory.Attach();
-	Offsets::client_dll = memory.GetModuleBase(memory.GetProcessId(), L"client.dll");
-	if (Offsets::client_dll == 0) return false;
+	Globals::client_dll = memory.GetModuleBase(memory.GetProcessId(), L"client.dll");
+	if (Globals::client_dll == 0) return false;
 
-	Offsets::engine2_dll = memory.GetModuleBase(memory.GetProcessId(), L"engine2.dll");
-	if (Offsets::engine2_dll == 0) return false;
+	Globals::engine2_dll = memory.GetModuleBase(memory.GetProcessId(), L"engine2.dll");
+	if (Globals::engine2_dll == 0) return false;
+
+    Globals::screenHeight = 0;
+	Globals::screenWidth = 0;
+    memory.ReadMemory(Globals::engine2_dll + Offsets::engine2_dll::MainOffsets::dwWindowHeight, &Globals::screenHeight, sizeof(Globals::screenHeight));
+	memory.ReadMemory(Globals::engine2_dll + Offsets::engine2_dll::MainOffsets::dwWindowWidth, &Globals::screenWidth, sizeof(Globals::screenWidth));
+    if (Globals::screenHeight == 0 || Globals::screenWidth == 0) {
+        return false; // Failed to read screen dimensions
+	}
 
 	return true;
 }
@@ -15,7 +24,7 @@ bool Game::Initialize(ProcessHelper& memory)
 DWORD64 Game::GetLocalPlayerPawn(ProcessHelper& memory)
 {
 	DWORD64 localPlayerPawn = NULL;
-    memory.ReadMemory(Offsets::client_dll + Offsets::MainOffsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
+    memory.ReadMemory(Globals::client_dll + Offsets::client_dll::MainOffsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
 	return localPlayerPawn; // Return the local player pawn address
 }
 
@@ -27,13 +36,13 @@ bool Game::Update(ProcessHelper& memory) {
     uint32_t flags = NULL;
     Math::Vector3 position; // Changed to Vector3
 
-    memory.ReadMemory(Offsets::client_dll + Offsets::MainOffsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
+    memory.ReadMemory(Globals::client_dll + Offsets::client_dll::MainOffsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
     if (localPlayerPawn > 0) {
-        memory.ReadMemory(localPlayerPawn + Offsets::Pawn::m_iHealth, &health, sizeof(health));
-        memory.ReadMemory(localPlayerPawn + Offsets::Pawn::m_iMaxHealth, &maxHealth, sizeof(maxHealth));
-        memory.ReadMemory(localPlayerPawn + Offsets::Pawn::m_iTeamNum, &teamNum, sizeof(teamNum));
-        memory.ReadMemory(localPlayerPawn + Offsets::Pawn::m_fFlags, &flags, sizeof(flags));
-		memory.ReadMemory(localPlayerPawn + Offsets::Pawn::m_vOldOrigin, &position, sizeof(position));
+        memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_iHealth, &health, sizeof(health));
+        memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_iMaxHealth, &maxHealth, sizeof(maxHealth));
+        memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_iTeamNum, &teamNum, sizeof(teamNum));
+        memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_fFlags, &flags, sizeof(flags));
+		memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::C_BasePlayerPawn::m_vOldOrigin, &position, sizeof(position));
 
         GameVars::LocalPlayerPawn::address = localPlayerPawn;
         GameVars::LocalPlayerPawn::health = health;
