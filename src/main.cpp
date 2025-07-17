@@ -8,7 +8,6 @@
 constexpr auto FILE_NAME = L"main.cpp";
 constexpr auto LOG_FILE = L"logs.txt";
 constexpr auto LOG_FORMAT = L"{timestamp} | {level} | {source} | {message}";
-constexpr auto LOG_LEVEL = LogLevel::INFO; // set minimum log level    change to info for release
 constexpr auto SPECTER_VERSION = "Specter - v0.0.9 Pre_Alpha";
 
 int main()
@@ -75,14 +74,27 @@ int main()
 
     // Game initialization
     logger.Log(LogLevel::INFO, L"Game", L"Game initialization...");
-    Game::Initialize(memory);
+    if (!Game::Initialize(memory))
+    {
+        logger.Log(LogLevel::ERR, L"Game", L"Failed to initialize game! Exiting...");
+        ExitSpecter(logger);
+        return EXIT_FAILURE; // Exit if game initialization fails
+	}
 
     // Log updated offsets
     std::wstringstream ss;
     ss.imbue(std::locale::classic());
     ss << L"client.dll -> 0x" << std::hex << std::setw(16) << std::setfill(L'0') << Offsets::client_dll;
     logger.Log(LogLevel::DEBUG, L"Game", ss.str());
+    ss.str(L"");
     ss.clear();
+    ss.unsetf(std::ios_base::hex);
+    ss.setf(std::ios_base::fmtflags(0), std::ios_base::basefield);
+    ss.fill(L' ');
+    ss.width(0);
+
+	ss << L"engine2.dll -> 0x" << std::hex << std::setw(16) << std::setfill(L'0') << Offsets::engine2_dll;
+	logger.Log(LogLevel::DEBUG, L"Game", ss.str());
 
     // Initialize entity list
     EntityManager::Initialize(memory);
@@ -129,7 +141,6 @@ int main()
 
             logger.Log(LogLevel::INFO, FILE_NAME, entityPosStream.str());
             logger.Log(LogLevel::INFO, FILE_NAME, L"Entity Health: " + std::to_wstring(entity.GetHealth()));
-            std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Small delay for logging
         }
 
         // Uncomment to log local player position
@@ -137,7 +148,8 @@ int main()
         localPosStream << L"Local Player Position: x" << GameVars::LocalPlayerPawn::position[0]
                        << L", y" << GameVars::LocalPlayerPawn::position[1]
                        << L", z" << GameVars::LocalPlayerPawn::position[2];
-        logger.Log(LogLevel::DEBUG, localPosStream.str());*/
+        logger.Log(LogLevel::DEBUG, localPosStream.str());
+        */
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Main loop delay
     }
 
