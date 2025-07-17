@@ -5,7 +5,9 @@
 #include <vector>
 #include "core/ProcessHelper.hpp"
 #include "game/game.hpp"
-#include "game/entity.hpp"
+
+// Forward declaration of Entity class to avoid circular dependency
+class Entity;
 
 namespace Globals {
     // Mutex for thread-safe access to global data
@@ -14,8 +16,8 @@ namespace Globals {
     // Pointer to ProcessHelper for CS2 process interaction
     inline ProcessHelper* processHelper = nullptr;
 
-    // Pointer to entity list (updated by Entity::UpdateEntityList)
-    inline std::vector<EntityVars::EntityData>* entityList = nullptr;
+    // Pointer to entity list (updated by EntityManager::UpdateEntityList)
+    inline std::vector<Entity>* entityList = nullptr;
 
     // Screen resolution parameters (to be set from game data)
     inline uint32_t screenWidth = 0;
@@ -29,4 +31,7 @@ namespace Globals {
     // CS2 process information
     inline uint32_t cs2ProcessId = 0;
     inline bool cs2Running = false;
+
+    // Cheat features
+    inline bool triggerEnabled = false;
 }

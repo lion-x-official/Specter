@@ -6,6 +6,9 @@ bool Game::Initialize(ProcessHelper& memory)
 	Offsets::client_dll = memory.GetModuleBase(memory.GetProcessId(), L"client.dll");
 	if (Offsets::client_dll == 0) return false;
 
+	Offsets::engine2_dll = memory.GetModuleBase(memory.GetProcessId(), L"engine2.dll");
+	if (Offsets::engine2_dll == 0) return false;
+
 	return true;
 }
 
@@ -22,7 +25,7 @@ bool Game::Update(ProcessHelper& memory) {
     int32_t maxHealth = NULL;
     uint8_t teamNum = NULL;
     uint32_t flags = NULL;
-	float position[3] = { 0.0f, 0.0f, 0.0f }; // m_vOldOrigin
+    Math::Vector3 position; // Changed to Vector3
 
     memory.ReadMemory(Offsets::client_dll + Offsets::MainOffsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
     if (localPlayerPawn > 0) {
@@ -30,16 +33,15 @@ bool Game::Update(ProcessHelper& memory) {
         memory.ReadMemory(localPlayerPawn + Offsets::Pawn::m_iMaxHealth, &maxHealth, sizeof(maxHealth));
         memory.ReadMemory(localPlayerPawn + Offsets::Pawn::m_iTeamNum, &teamNum, sizeof(teamNum));
         memory.ReadMemory(localPlayerPawn + Offsets::Pawn::m_fFlags, &flags, sizeof(flags));
-		memory.ReadMemory(localPlayerPawn + Offsets::Pawn::m_vOldOrigin, position, sizeof(position));
+		memory.ReadMemory(localPlayerPawn + Offsets::Pawn::m_vOldOrigin, &position, sizeof(position));
         
         GameVars::LocalPlayerPawn::address = localPlayerPawn;
         GameVars::LocalPlayerPawn::health = health;
         GameVars::LocalPlayerPawn::maxHealth = maxHealth;
         GameVars::LocalPlayerPawn::teamNum = teamNum;
         GameVars::LocalPlayerPawn::flags = flags;
-		GameVars::LocalPlayerPawn::position[0] = position[0];
-		GameVars::LocalPlayerPawn::position[1] = position[1];
-        GameVars::LocalPlayerPawn::position[2] = position[2];
+        GameVars::LocalPlayerPawn::position = position;
+
 
     }
     else {
@@ -48,9 +50,7 @@ bool Game::Update(ProcessHelper& memory) {
         GameVars::LocalPlayerPawn::maxHealth = NULL;
         GameVars::LocalPlayerPawn::teamNum = NULL;
         GameVars::LocalPlayerPawn::flags = NULL;
-        GameVars::LocalPlayerPawn::position[0] = 0.0f;
-        GameVars::LocalPlayerPawn::position[0] = 0.0f;
-        GameVars::LocalPlayerPawn::position[0] = 0.0f;
+        GameVars::LocalPlayerPawn::position = Math::Vector3{ 0.0f, 0.0f, 0.0f };
     }
     return localPlayerPawn != 0; // Return true if local player pawn is valid
 }

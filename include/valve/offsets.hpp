@@ -8,6 +8,7 @@
 // game offsets
 namespace Offsets {
     inline uintptr_t client_dll = 0;
+    inline uintptr_t engine2_dll = 0;
 
     namespace MainOffsets {
         constexpr std::ptrdiff_t dwLocalPlayerPawn = 0x18590D0;

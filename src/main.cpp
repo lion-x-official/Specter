@@ -57,6 +57,7 @@ int main()
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     Globals::cs2ProcessId = Globals::processHelper->GetProcessId();
+    Globals::cs2Running = Globals::cs2ProcessId == 0 ? memory.GetProcessId() : Globals::cs2ProcessId; // Ensure process ID is set
     logger.Log(LogLevel::DEBUG, FILE_NAME, L"Process found! " + Globals::processHelper->GetProcessName() + L" -> " + std::to_wstring(Globals::processHelper->GetProcessId()));
     std::this_thread::sleep_for(std::chrono::milliseconds(600));
 
@@ -76,25 +77,15 @@ int main()
     logger.Log(LogLevel::INFO, L"Game", L"Game initialization...");
     Game::Initialize(memory);
 
-    // Log updated offsets for debugging
+    // Log updated offsets
     std::wstringstream ss;
     ss.imbue(std::locale::classic());
     ss << L"client.dll -> 0x" << std::hex << std::setw(16) << std::setfill(L'0') << Offsets::client_dll;
     logger.Log(LogLevel::DEBUG, L"Game", ss.str());
     ss.clear();
 
-    // Update game state
-    Game::Update(memory);
-
     // Initialize entity list
-    Entity::Initialize(memory);
-
-    // Log important LocalPlayerPawn offsets
-    logger.Log(LogLevel::DEBUG, L"Offsets", L"LocalPlayerPawn -> " + std::to_wstring(GameVars::LocalPlayerPawn::address));
-    logger.Log(LogLevel::DEBUG, L"Offsets", L"LocalPlayerPawn Health -> " + std::to_wstring(GameVars::LocalPlayerPawn::health));
-    logger.Log(LogLevel::DEBUG, L"Offsets", L"LocalPlayerPawn MaxHealth -> " + std::to_wstring(GameVars::LocalPlayerPawn::maxHealth));
-    logger.Log(LogLevel::DEBUG, L"Offsets", L"LocalPlayerPawn TeamNum -> " + std::to_wstring(GameVars::LocalPlayerPawn::teamNum));
-    logger.Log(LogLevel::DEBUG, L"Offsets", L"LocalPlayerPawn fFlags -> " + std::to_wstring(GameVars::LocalPlayerPawn::flags));
+    EntityManager::Initialize(memory);
 
     // Game initialization complete
     logger.Log(LogLevel::INFO, L"Game", L"Game initialization successfully!");
@@ -102,7 +93,6 @@ int main()
     logger.Log(LogLevel::INFO, FILE_NAME, L"Loading main loop");
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
     system("cls");
-
 
     // Main loop: runs until F1 is pressed
     while (!GetAsyncKeyState(VK_F1))
@@ -126,18 +116,19 @@ int main()
 
         // Update game and entity list each loop
         Game::Update(memory);
-        Entity::UpdateEntityList(memory);
+        EntityManager::UpdateEntityList(memory);
 
         // Log entity positions and health
-        for (const auto& entity : Entity::GetEntityList()) {
+        for (const auto& entity : EntityManager::GetEntities()) {
             std::lock_guard<std::mutex> lock(Globals::globalMutex); // Thread safety for entity access
+            Math::Vector3 entityPos = entity.GetPosition(); // Get position using method
             std::wstringstream entityPosStream;
-            entityPosStream << L"Entity position: x" << entity.position[0]
-                            << L", y" << entity.position[1]
-                            << L", z" << entity.position[2];
+            entityPosStream << L"Entity position: x" << entityPos.x
+                << L", y" << entityPos.y
+                << L", z" << entityPos.z;
 
             logger.Log(LogLevel::DEBUG, FILE_NAME, entityPosStream.str());
-            logger.Log(LogLevel::DEBUG, FILE_NAME, L"Entity Health: " + std::to_wstring(entity.health));
+            logger.Log(LogLevel::DEBUG, FILE_NAME, L"Entity Health: " + std::to_wstring(entity.GetHealth()));
             std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Small delay for logging
         }
 
