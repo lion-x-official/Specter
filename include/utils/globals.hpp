@@ -36,6 +36,7 @@ namespace Globals {
     inline uint32_t cs2ProcessId = 0;
     inline bool cs2Running = false;
 
-    // Cheat features
+    // TriggerBot vars
     inline bool triggerEnabled = false;
+    inline bool triggerTeamCheck = false;
 }
