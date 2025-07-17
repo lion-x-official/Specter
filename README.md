@@ -1,6 +1,9 @@
 ﻿# Specter - CS2 External Cheat (Pre-Alpha)
 
-**Specter** is an external cheat for Counter-Strike 2 (CS2), currently in **pre-alpha** (version 0.0.9). This project serves as a prototype for interacting with CS2’s memory to provide cheat functionalities. This release represents a **major update** with significant structural changes and new features.
+[![Downloads](https://img.shields.io/github/downloads/lion-x-official/Specter/total?style=for-the-badge&logo=github&link=https%3A%2F%2Fgithub.com%2Flion-x-official%2FSpecter%2Freleases)](https://github.com/lion-x-official/Specter/releases)
+[![Latest Release](https://img.shields.io/github/v/release/lion-x-official/Specter?display_name=tag&style=for-the-badge&logo=github&color=%23b34be3&link=https%3A%2F%2Fgithub.com%2Flion-x-official%2FSpecter%2Freleases%2Flatest)](https://github.com/lion-x-official/Specter/releases/latest)
+
+**Specter** is an external cheat for Counter-Strike 2 (CS2), currently in **pre-alpha** (version 0.0.9). This project serves as a prototype for interacting with CS2’s memory to provide cheat functionalities. The latest release includes critical updates to game offsets and logging improvements.
 
 ⚠️ **Disclaimer**: Specter is a proof-of-concept for educational purposes only. Use responsibly and in compliance with game terms of service. The developers are not liable for any misuse or consequences.
 
@@ -11,7 +14,7 @@
 - **Entity Position Display**: Shows real-time positions of all entities (requires being on a map).  
 - **Trigger Bot Foundation**: Initial framework for a trigger bot (in development).  
 - **Player Health Display**: Displays the player’s health in-game (requires being on a map).  
-- **Enhanced Logging**: Colored console logs for clear debugging and operation tracking.  
+- **Enhanced Logging**: Colored console logs with improved mode switching for clear debugging.  
 - **ProcessHelper**: Robust system for efficient memory operations.  
 - **Console Title**: Custom console title for easy identification.  
 - **Global Variables & Math Utilities**: Added for streamlined development and calculations.  
@@ -42,6 +45,9 @@
 ## Current Status
 - **Version**: 0.0.9 (Pre-Alpha)  
 - **Stage**: Prototype with experimental features.  
+- **Recent Updates** (v0.0.9):  
+  - Updated game offsets for compatibility with the latest CS2 version.  
+  - Improved console logging mode switching.  
 - **Known Limitations**:  
   - Requires x64 system.  
   - Entity and health features work only on a CS2 map.  
@@ -70,6 +76,6 @@ Specter is distributed under a **proprietary license**. See the `LICENSE` file f
 ## Disclaimer
 Specter is a **pre-alpha prototype** and may contain bugs or incomplete features. Use at your own risk. The developers are not responsible for any consequences, including bans or legal issues.
 
-Thank you for checking out Specter! Feedback is appreciated.  
+Thank you for checking out Specter! Feedback is appreciated.
 
 🔗 [GitHub Repository](https://github.com/lion-x-official/Specter)
