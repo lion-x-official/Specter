@@ -12,7 +12,7 @@ public:
 		Globals::triggerEnabled = value;
 	}
 
-	static void toggle() {
+	static void toggleEnabled() {
 		Globals::triggerEnabled = !Globals::triggerEnabled;
 	}
 

@@ -140,7 +140,7 @@ int main()
 
         if (GetAsyncKeyState(VK_F2))
         {
-            Trigger::toggle();
+            Trigger::toggleEnabled();
             logger.Log(LogLevel::INFO, L"TriggerBot", L"Trigger status: " + std::to_wstring(Trigger::getStatus()));
         }
 
