@@ -127,8 +127,8 @@ int main()
                 << L", y" << entityPos.y
                 << L", z" << entityPos.z;
 
-            logger.Log(LogLevel::DEBUG, FILE_NAME, entityPosStream.str());
-            logger.Log(LogLevel::DEBUG, FILE_NAME, L"Entity Health: " + std::to_wstring(entity.GetHealth()));
+            logger.Log(LogLevel::INFO, FILE_NAME, entityPosStream.str());
+            logger.Log(LogLevel::INFO, FILE_NAME, L"Entity Health: " + std::to_wstring(entity.GetHealth()));
             std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Small delay for logging
         }
 
