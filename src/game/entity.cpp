@@ -44,7 +44,7 @@ bool EntityManager::UpdateEntityList(ProcessHelper& memory) {
 
     // Read entity list base address
     uint64_t entityList{ 0 };
-    if (!memory.ReadMemory(Offsets::client_dll + Offsets::MainOffsets::dwEntityList, &entityList, sizeof(entityList)) || entityList == 0) {
+    if (!memory.ReadMemory(Globals::client_dll + Offsets::client_dll::MainOffsets::dwEntityList, &entityList, sizeof(entityList)) || entityList == 0) {
         std::cerr << "Failed to read entity list base address" << std::endl;
         std::lock_guard<std::mutex> lock(Globals::globalMutex);
         Globals::cs2Running = false;
@@ -67,7 +67,7 @@ bool EntityManager::UpdateEntityList(ProcessHelper& memory) {
         entityData.controllerAddress = entityController;
 
         uint64_t entityControllerPawn{ 0 };
-        if (!memory.ReadMemory(entityController + Offsets::Controller::m_hPawn, &entityControllerPawn, sizeof(entityControllerPawn)) || entityControllerPawn == 0) {
+        if (!memory.ReadMemory(entityController + Offsets::client_dll::C_BaseEntity::CBasePlayerController::m_hPawn, &entityControllerPawn, sizeof(entityControllerPawn)) || entityControllerPawn == 0) {
             continue;
         }
 
@@ -83,11 +83,11 @@ bool EntityManager::UpdateEntityList(ProcessHelper& memory) {
         entityData.pawnAddress = entityPawn;
 
         // Read entity properties
-        if (!memory.ReadMemory(entityPawn + Offsets::Pawn::m_iHealth, &entityData.health, sizeof(entityData.health)) ||
-            !memory.ReadMemory(entityPawn + Offsets::Pawn::m_iMaxHealth, &entityData.maxHealth, sizeof(entityData.maxHealth)) ||
-            !memory.ReadMemory(entityPawn + Offsets::Pawn::m_iTeamNum, &entityData.teamNum, sizeof(entityData.teamNum)) ||
-            !memory.ReadMemory(entityPawn + Offsets::Pawn::m_fFlags, &entityData.flags, sizeof(entityData.flags)) ||
-            !memory.ReadMemory(entityPawn + Offsets::Pawn::m_vOldOrigin, &entityData.position, sizeof(Math::Vector3))) {
+        if (!memory.ReadMemory(entityPawn + Offsets::client_dll::C_BaseEntity::m_iHealth, &entityData.health, sizeof(entityData.health)) ||
+            !memory.ReadMemory(entityPawn + Offsets::client_dll::C_BaseEntity::m_iMaxHealth, &entityData.maxHealth, sizeof(entityData.maxHealth)) ||
+            !memory.ReadMemory(entityPawn + Offsets::client_dll::C_BaseEntity::m_iTeamNum, &entityData.teamNum, sizeof(entityData.teamNum)) ||
+            !memory.ReadMemory(entityPawn + Offsets::client_dll::C_BaseEntity::m_fFlags, &entityData.flags, sizeof(entityData.flags)) ||
+            !memory.ReadMemory(entityPawn + Offsets::client_dll::C_BaseEntity::C_BasePlayerPawn::m_vOldOrigin, &entityData.position, sizeof(Math::Vector3))) {
             continue;
         }
 

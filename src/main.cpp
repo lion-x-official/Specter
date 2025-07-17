@@ -8,6 +8,7 @@
 constexpr auto FILE_NAME = L"main.cpp";
 constexpr auto LOG_FILE = L"logs.txt";
 constexpr auto LOG_FORMAT = L"{timestamp} | {level} | {source} | {message}";
+constexpr auto LOG_LEVEL = LogLevel::DEBUG; // set minimum log level    change to info for release
 constexpr auto SPECTER_VERSION = "Specter - v0.0.9 Pre_Alpha";
 
 int main()
@@ -81,10 +82,18 @@ int main()
         return EXIT_FAILURE; // Exit if game initialization fails
 	}
 
+    // Initialize entity list
+    if (!EntityManager::Initialize(memory))
+    {
+        logger.Log(LogLevel::ERR, L"EntityManager", L"Failed to initialize entity manager! Exiting...");
+        ExitSpecter(logger);
+		return EXIT_FAILURE; // Exit if entity manager initialization fails
+    }
+
     // Log updated offsets
     std::wstringstream ss;
     ss.imbue(std::locale::classic());
-    ss << L"client.dll -> 0x" << std::hex << std::setw(16) << std::setfill(L'0') << Offsets::client_dll;
+    ss << L"client.dll -> 0x" << std::hex << std::setw(16) << std::setfill(L'0') << Globals::client_dll;
     logger.Log(LogLevel::DEBUG, L"Game", ss.str());
     ss.str(L"");
     ss.clear();
@@ -93,11 +102,10 @@ int main()
     ss.fill(L' ');
     ss.width(0);
 
-	ss << L"engine2.dll -> 0x" << std::hex << std::setw(16) << std::setfill(L'0') << Offsets::engine2_dll;
+	ss << L"engine2.dll -> 0x" << std::hex << std::setw(16) << std::setfill(L'0') << Globals::engine2_dll;
 	logger.Log(LogLevel::DEBUG, L"Game", ss.str());
 
-    // Initialize entity list
-    EntityManager::Initialize(memory);
+	logger.Log(LogLevel::DEBUG, L"Game", L"Screen resolution: " + std::to_wstring(Globals::screenWidth) + L"x" + std::to_wstring(Globals::screenHeight));
 
     // Game initialization complete
     logger.Log(LogLevel::INFO, L"Game", L"Game initialization successfully!");
@@ -131,25 +139,18 @@ int main()
         EntityManager::UpdateEntityList(memory);
 
         // Log entity positions and health
-        for (const auto& entity : EntityManager::GetEntities()) {
-            std::lock_guard<std::mutex> lock(Globals::globalMutex); // Thread safety for entity access
-            Math::Vector3 entityPos = entity.GetPosition(); // Get position using method
-            std::wstringstream entityPosStream;
-            entityPosStream << L"Entity position: x" << entityPos.x
-                << L", y" << entityPos.y
-                << L", z" << entityPos.z;
+        //for (const auto& entity : EntityManager::GetEntities()) {
+        //    std::lock_guard<std::mutex> lock(Globals::globalMutex); // Thread safety for entity access
+        //    Math::Vector3 entityPos = entity.GetPosition(); // Get position using method
+        //    std::wstringstream entityPosStream;
+        //    entityPosStream << L"Entity position: x" << entityPos.x
+        //        << L", y" << entityPos.y
+        //        << L", z" << entityPos.z;
 
-            logger.Log(LogLevel::INFO, FILE_NAME, entityPosStream.str());
-            logger.Log(LogLevel::INFO, FILE_NAME, L"Entity Health: " + std::to_wstring(entity.GetHealth()));
-        }
+        //    logger.Log(LogLevel::INFO, FILE_NAME, entityPosStream.str());
+        //    logger.Log(LogLevel::INFO, FILE_NAME, L"Entity Health: " + std::to_wstring(entity.GetHealth()));
+        //}
 
-        // Uncomment to log local player position
-        /*std::wstringstream localPosStream;
-        localPosStream << L"Local Player Position: x" << GameVars::LocalPlayerPawn::position[0]
-                       << L", y" << GameVars::LocalPlayerPawn::position[1]
-                       << L", z" << GameVars::LocalPlayerPawn::position[2];
-        logger.Log(LogLevel::DEBUG, localPosStream.str());
-        */
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Main loop delay
     }
 

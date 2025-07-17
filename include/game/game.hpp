@@ -5,6 +5,7 @@
 #include "core/ProcessHelper.hpp"
 #include "utils/math.hpp"
 #include "valve/offsets.hpp"
+#include "utils/globals.hpp"
 
 class Game{
 public:
