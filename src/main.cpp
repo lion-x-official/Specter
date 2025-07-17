@@ -114,6 +114,7 @@ int main()
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
     system("cls");
 
+
     // update thread for game vars updating
     std::thread updThread(UpdateThread);
 
@@ -135,6 +136,12 @@ int main()
         {
             logger.Log(LogLevel::INFO, FILE_NAME, L"CS2 process not found! Exiting...");
             break; // Exit the loop if the process is not running
+        }
+
+        if (GetAsyncKeyState(VK_F2))
+        {
+            Trigger::toggle();
+            logger.Log(LogLevel::INFO, L"TriggerBot", L"Trigger status: " + std::to_wstring(Trigger::getStatus()));
         }
 
         // Log entity positions and health
@@ -170,7 +177,7 @@ void UpdateThread()
         Game::Update(*Globals::processHelper);
         EntityManager::UpdateEntityList(*Globals::processHelper);
         
-		logger.Log(LogLevel::DEBUG, L"UpdateThread", L"Vars updated");
+		//logger.Log(LogLevel::DEBUG, L"UpdateThread", L"Vars updated");
 
         // Sleep to reduce CPU usage
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
