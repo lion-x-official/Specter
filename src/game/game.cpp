@@ -51,7 +51,6 @@ bool Game::Update(ProcessHelper& memory) {
         GameVars::LocalPlayerPawn::flags = flags;
         GameVars::LocalPlayerPawn::position = position;
     }
-    // ... rest of the code
     else {
         GameVars::LocalPlayerPawn::address = NULL;
         GameVars::LocalPlayerPawn::health = NULL;
