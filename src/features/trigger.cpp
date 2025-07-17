@@ -1,7 +1,7 @@
 #include "features/trigger.hpp"
 
 bool Trigger::Update(ProcessHelper& memory) {
-	if (isEnabled) {
+	if (Globals::triggerEnabled) {
 
 	}
 	return true;

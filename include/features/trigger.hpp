@@ -1,17 +1,17 @@
 #pragma once
 #include "core/ProcessHelper.hpp"
+#include "utils/globals.hpp"
+
 
 class Trigger {
 public:
 	bool Update(ProcessHelper& memory);
 
 	void setEnabled(bool value) {
-		isEnabled = value;
+		Globals::triggerEnabled = value;
 	}
 
 	bool getStatus() const {
-		return isEnabled;
+		return Globals::triggerEnabled;
 	}
-private:
-	bool isEnabled = false;
 };
