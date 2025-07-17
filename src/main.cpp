@@ -147,7 +147,6 @@ int main()
                        << L", y" << GameVars::LocalPlayerPawn::position[1]
                        << L", z" << GameVars::LocalPlayerPawn::position[2];
         logger.Log(LogLevel::DEBUG, localPosStream.str());*/
-        std::cout << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Main loop delay
     }
 

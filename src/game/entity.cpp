@@ -1,61 +1,82 @@
 #include "game/entity.hpp"
-#include "utils/globals.hpp"  // Include globals.hpp here to access Globals::entityList
+#include <iostream> // For logging
 
-bool Entity::Initialize(ProcessHelper& memory) {
-    // Ensure the process is attached and client.dll is found
+// Constants for entity list offsets
+namespace Offsets {
+    namespace EntityList {
+        constexpr size_t ENTRY_OFFSET = 8;
+        constexpr size_t LIST_OFFSET = 16;
+        constexpr size_t INDEX_MASK = 0x7FFF;
+        constexpr size_t ENTRY_INDEX = 120;
+        constexpr size_t CONTROLLER_MASK = 0x1FF;
+    }
+}
+
+bool EntityManager::Initialize(ProcessHelper& memory) {
+    // Check if process is running and attach to it
     if (!memory.IsProcessRunning() || !memory.Attach()) {
+        std::cerr << "Failed to attach to CS2 process" << std::endl;
         return false;
     }
 
     // Initialize global process helper and entity list
     {
         std::lock_guard<std::mutex> lock(Globals::globalMutex);
-        Globals::processHelper = &memory;
-        Globals::entityList = &EntityVars::entityList; // Initialize the pointer
+        if (!Globals::processHelper) {
+            Globals::processHelper = &memory;
+        }
+        // Initialize global entity list pointer to point to EntityManager::entities_
+        Globals::entityList = &entities_;
         Globals::cs2Running = true;
     }
     return true;
 }
 
-bool Entity::UpdateEntityList(ProcessHelper& memory) {
-    // Clear the entity list
+bool EntityManager::UpdateEntityList(ProcessHelper& memory) {
+    // Reserve memory for entity list to avoid reallocations
     {
         std::lock_guard<std::mutex> lock(Globals::globalMutex);
-        EntityVars::entityList.clear();
+        entities_.clear();
+        entities_.reserve(MAX_PLAYERS);
+        // Ensure global entity list points to the updated list
+        Globals::entityList = &entities_;
     }
 
-    // Read the entity list base address
-    DWORD64 entityList{ 0 };
+    // Read entity list base address
+    uint64_t entityList{ 0 };
     if (!memory.ReadMemory(Offsets::client_dll + Offsets::MainOffsets::dwEntityList, &entityList, sizeof(entityList)) || entityList == 0) {
+        std::cerr << "Failed to read entity list base address" << std::endl;
+        std::lock_guard<std::mutex> lock(Globals::globalMutex);
+        Globals::cs2Running = false;
         return false;
     }
 
     // Iterate through players (max 64 players, standard for CS2)
     for (int i = 0; i < MAX_PLAYERS; ++i) {
-        DWORD64 listEntry{ 0 };
-        if (!memory.ReadMemory(entityList + ((8 * (i & 0x7FFF) >> 9) + 16), &listEntry, sizeof(listEntry)) || listEntry == 0) {
+        uint64_t listEntry{ 0 };
+        if (!memory.ReadMemory(entityList + (Offsets::EntityList::ENTRY_OFFSET * (i & Offsets::EntityList::INDEX_MASK) >> 9) + Offsets::EntityList::LIST_OFFSET, &listEntry, sizeof(listEntry)) || listEntry == 0) {
             continue;
         }
 
         EntityVars::EntityData entityData;
-        DWORD64 entityController{ 0 };
-        if (!memory.ReadMemory(listEntry + (120) * (i & 0x1FF), &entityController, sizeof(entityController)) || entityController == 0) {
+        uint64_t entityController{ 0 };
+        if (!memory.ReadMemory(listEntry + Offsets::EntityList::ENTRY_INDEX * (i & Offsets::EntityList::CONTROLLER_MASK), &entityController, sizeof(entityController)) || entityController == 0) {
             continue;
         }
 
         entityData.controllerAddress = entityController;
 
-        DWORD64 entityControllerPawn{ 0 };
+        uint64_t entityControllerPawn{ 0 };
         if (!memory.ReadMemory(entityController + Offsets::Controller::m_hPawn, &entityControllerPawn, sizeof(entityControllerPawn)) || entityControllerPawn == 0) {
             continue;
         }
 
-        if (!memory.ReadMemory(entityList + (0x8 * ((entityControllerPawn & 0x7FFF) >> 9) + 16), &listEntry, sizeof(listEntry)) || listEntry == 0) {
+        if (!memory.ReadMemory(entityList + (Offsets::EntityList::ENTRY_OFFSET * ((entityControllerPawn & Offsets::EntityList::INDEX_MASK) >> 9) + Offsets::EntityList::LIST_OFFSET), &listEntry, sizeof(listEntry)) || listEntry == 0) {
             continue;
         }
 
-        DWORD64 entityPawn{ 0 };
-        if (!memory.ReadMemory(listEntry + (120) * (entityControllerPawn & 0x1FF), &entityPawn, sizeof(entityPawn)) || entityPawn == 0) {
+        uint64_t entityPawn{ 0 };
+        if (!memory.ReadMemory(listEntry + Offsets::EntityList::ENTRY_INDEX * (entityControllerPawn & Offsets::EntityList::CONTROLLER_MASK), &entityPawn, sizeof(entityPawn)) || entityPawn == 0) {
             continue;
         }
 
@@ -66,26 +87,26 @@ bool Entity::UpdateEntityList(ProcessHelper& memory) {
             !memory.ReadMemory(entityPawn + Offsets::Pawn::m_iMaxHealth, &entityData.maxHealth, sizeof(entityData.maxHealth)) ||
             !memory.ReadMemory(entityPawn + Offsets::Pawn::m_iTeamNum, &entityData.teamNum, sizeof(entityData.teamNum)) ||
             !memory.ReadMemory(entityPawn + Offsets::Pawn::m_fFlags, &entityData.flags, sizeof(entityData.flags)) ||
-            !memory.ReadMemory(entityPawn + Offsets::Pawn::m_vOldOrigin, entityData.position, sizeof(entityData.position))) {
+            !memory.ReadMemory(entityPawn + Offsets::Pawn::m_vOldOrigin, &entityData.position, sizeof(Math::Vector3))) {
             continue;
         }
 
         // Add entity to the list
         {
             std::lock_guard<std::mutex> lock(Globals::globalMutex);
-            EntityVars::entityList.push_back(entityData);
+            entities_.emplace_back(entityData);
         }
     }
 
     // Update global CS2 process status
     {
         std::lock_guard<std::mutex> lock(Globals::globalMutex);
-        Globals::cs2Running = !EntityVars::entityList.empty();
+        Globals::cs2Running = !entities_.empty();
     }
 
-    return !EntityVars::entityList.empty();
+    return !entities_.empty();
 }
 
-const std::vector<EntityVars::EntityData>& Entity::GetEntityList() {
-    return EntityVars::entityList;
+const std::vector<Entity>& EntityManager::GetEntities() {
+    return entities_;
 }
