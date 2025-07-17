@@ -8,9 +8,13 @@
 
 #include "core/logger.hpp"
 #include "core/ProcessHelper.hpp"
+
 #include "game/game.hpp"
 #include "game/entity.hpp"
+
 #include "utils/utils.hpp"
 #include "utils/globals.hpp"
+
+#include "features/trigger.hpp"
 
 void UpdateThread();
