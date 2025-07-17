@@ -110,3 +110,74 @@ bool EntityManager::UpdateEntityList(ProcessHelper& memory) {
 const std::vector<Entity>& EntityManager::GetEntities() {
     return entities_;
 }
+
+uint64_t EntityManager::GetEntityPawnFromIndex(ProcessHelper& memory, int index) {
+    // Validate index
+    if (index < 0 || index >= MAX_PLAYERS) {
+        return 0;
+    }
+
+    // Read entity list base address
+    uint64_t entityList{ 0 };
+    if (!memory.ReadMemory(Globals::client_dll + Offsets::client_dll::MainOffsets::dwEntityList, &entityList, sizeof(entityList)) || entityList == 0) {
+        return 0;
+    }
+
+    // Read list entry
+    uint64_t listEntry{ 0 };
+    if (!memory.ReadMemory(entityList + (Offsets::EntityList::ENTRY_OFFSET * (index & Offsets::EntityList::INDEX_MASK) >> 9) + Offsets::EntityList::LIST_OFFSET, &listEntry, sizeof(listEntry)) || listEntry == 0) {
+        return 0;
+    }
+
+    // Read controller address
+    uint64_t entityController{ 0 };
+    if (!memory.ReadMemory(listEntry + Offsets::EntityList::ENTRY_INDEX * (index & Offsets::EntityList::CONTROLLER_MASK), &entityController, sizeof(entityController)) || entityController == 0) {
+        return 0;
+    }
+
+    // Read pawn handle
+    uint64_t entityControllerPawn{ 0 };
+    if (!memory.ReadMemory(entityController + Offsets::client_dll::C_BaseEntity::CBasePlayerController::m_hPawn, &entityControllerPawn, sizeof(entityControllerPawn)) || entityControllerPawn == 0) {
+        return 0;
+    }
+
+    // Read pawn list entry
+    if (!memory.ReadMemory(entityList + (Offsets::EntityList::ENTRY_OFFSET * ((entityControllerPawn & Offsets::EntityList::INDEX_MASK) >> 9) + Offsets::EntityList::LIST_OFFSET), &listEntry, sizeof(listEntry)) || listEntry == 0) {
+        return 0;
+    }
+
+    // Read pawn address
+    uint64_t entityPawn{ 0 };
+    if (!memory.ReadMemory(listEntry + Offsets::EntityList::ENTRY_INDEX * (entityControllerPawn & Offsets::EntityList::CONTROLLER_MASK), &entityPawn, sizeof(entityPawn)) || entityPawn == 0) {
+        return 0;
+    }
+
+    return entityPawn;
+}
+
+uint64_t EntityManager::GetEntityControllerFromIndex(ProcessHelper& memory, int index) {
+    // Validate index
+    if (index < 0 || index >= MAX_PLAYERS) {
+        return 0;
+    }
+
+    // Read entity list base address
+    uint64_t entityList{ 0 };
+    if (!memory.ReadMemory(Globals::client_dll + Offsets::client_dll::MainOffsets::dwEntityList, &entityList, sizeof(entityList)) || entityList == 0) {
+        return 0;
+    }
+
+    // Read list entry
+    uint64_t listEntry{ 0 };
+    if (!memory.ReadMemory(entityList + (Offsets::EntityList::ENTRY_OFFSET * (index & Offsets::EntityList::INDEX_MASK) >> 9) + Offsets::EntityList::LIST_OFFSET, &listEntry, sizeof(listEntry)) || listEntry == 0) {
+        return 0;
+    }
+
+    // Read controller address
+    uint64_t entityController{ 0 };
+    if (!memory.ReadMemory(listEntry + Offsets::EntityList::ENTRY_INDEX * (index & Offsets::EntityList::CONTROLLER_MASK), &entityController, sizeof(entityController)) || entityController == 0) {
+        return 0;
+    }
+
+    return entityController;
+}

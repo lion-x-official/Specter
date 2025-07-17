@@ -69,6 +69,12 @@ public:
     // Get the list of entities
     static const std::vector<Entity>& GetEntities();
 
+    // Get pawn address from entity index
+    static uint64_t GetEntityPawnFromIndex(ProcessHelper& memory, int index);
+
+    // Get controller address from entity index
+    static uint64_t GetEntityControllerFromIndex(ProcessHelper& memory, int index);
+
 private:
     // Global entity list
     inline static std::vector<Entity> entities_;
