@@ -12,6 +12,10 @@ public:
 		Globals::triggerEnabled = value;
 	}
 
+	void toggle() {
+		Globals::triggerEnabled = !Globals::triggerEnabled;
+	}
+
 	bool getStatus() const {
 		return Globals::triggerEnabled;
 	}
