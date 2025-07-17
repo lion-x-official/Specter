@@ -176,8 +176,7 @@ void UpdateThread()
     {
         Game::Update(*Globals::processHelper);
         EntityManager::UpdateEntityList(*Globals::processHelper);
-        
-		//logger.Log(LogLevel::DEBUG, L"UpdateThread", L"Vars updated");
+        Trigger::Update(*Globals::processHelper);
 
         // Sleep to reduce CPU usage
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
