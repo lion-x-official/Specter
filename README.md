@@ -54,6 +54,11 @@
   - Limited cheat functionality; more features planned.  
 - **Note**: The old repository was removed, and this is a fresh start. We apologize for any inconvenience.
 
+## Future Plans
+- **Trigger Bot**: Actively in development, with a focus on completing a fully functional implementation.  
+- **BunnyHop**: Planned as the next major feature following the trigger bot.  
+- **Additional Features**: Exploring other cheat functionalities (to be determined based on development progress and community feedback).
+
 ## Contributing
 Contributions are welcome! To contribute:  
 1. Fork the repository.  
@@ -69,6 +74,7 @@ Specter is distributed under a **proprietary license**. See the `LICENSE` file f
 
 ## Roadmap
 - Complete trigger bot implementation.  
+- Implement BunnyHop functionality.  
 - Add advanced cheat features (e.g., aimbot, wallhack).  
 - Enhance stability and error handling.  
 - Optimize memory operations and offset management.
@@ -76,6 +82,5 @@ Specter is distributed under a **proprietary license**. See the `LICENSE` file f
 ## Disclaimer
 Specter is a **pre-alpha prototype** and may contain bugs or incomplete features. Use at your own risk. The developers are not responsible for any consequences, including bans or legal issues.
 
-Thank you for checking out Specter! Feedback is appreciated.
-
+Thank you for checking out Specter! Feedback is appreciated.  
 🔗 [GitHub Repository](https://github.com/lion-x-official/Specter)
