@@ -4,19 +4,19 @@
 #include "utils/globals.hpp"
 
 
-class Trigger {
+static class Trigger {
 public:
-	bool Update(ProcessHelper& memory);
+	static bool Update(ProcessHelper& memory);
 
-	void setEnabled(bool value) {
+	static void setEnabled(bool value) {
 		Globals::triggerEnabled = value;
 	}
 
-	void toggle() {
+	static void toggle() {
 		Globals::triggerEnabled = !Globals::triggerEnabled;
 	}
 
-	bool getStatus() const {
+	static bool getStatus() {
 		return Globals::triggerEnabled;
 	}
 };
