@@ -1,63 +1,90 @@
 #include "game/game.hpp"
+#include <iostream>
 
+// Initialize game with process helper
+bool Game::Initialize() {
+    if (!Globals::processHelper->Attach()) {
+        std::cerr << "Failed to attach to CS2 process" << std::endl;
+        return false;
+    }
 
-bool Game::Initialize(ProcessHelper& memory)
-{
-	memory.Attach();
-	Globals::client_dll = memory.GetModuleBase(memory.GetProcessId(), L"client.dll");
-	if (Globals::client_dll == 0) return false;
+    Globals::client_dll = Globals::processHelper->GetModuleBase(Globals::processHelper->GetProcessId(), L"client.dll");
+    if (Globals::client_dll == 0) {
+        std::cerr << "Failed to find client.dll" << std::endl;
+        return false;
+    }
 
-	Globals::engine2_dll = memory.GetModuleBase(memory.GetProcessId(), L"engine2.dll");
-	if (Globals::engine2_dll == 0) return false;
+    Globals::engine2_dll = Globals::processHelper->GetModuleBase(Globals::processHelper->GetProcessId(), L"engine2.dll");
+    if (Globals::engine2_dll == 0) {
+        std::cerr << "Failed to find engine2.dll" << std::endl;
+        return false;
+    }
 
-    Globals::screenHeight = 0;
-	Globals::screenWidth = 0;
-    memory.ReadMemory(Globals::engine2_dll + Offsets::engine2_dll::MainOffsets::dwWindowHeight, &Globals::screenHeight, sizeof(Globals::screenHeight));
-	memory.ReadMemory(Globals::engine2_dll + Offsets::engine2_dll::MainOffsets::dwWindowWidth, &Globals::screenWidth, sizeof(Globals::screenWidth));
+    if (!Globals::processHelper->ReadMemory(Globals::engine2_dll + Offsets::engine2_dll::MainOffsets::dwWindowHeight, &Globals::screenHeight, sizeof(Globals::screenHeight)) ||
+        !Globals::processHelper->ReadMemory(Globals::engine2_dll + Offsets::engine2_dll::MainOffsets::dwWindowWidth, &Globals::screenWidth, sizeof(Globals::screenWidth))) {
+        std::cerr << "Failed to read screen dimensions" << std::endl;
+        return false;
+    }
+
     if (Globals::screenHeight == 0 || Globals::screenWidth == 0) {
-        return false; // Failed to read screen dimensions
-	}
+        std::cerr << "Invalid screen dimensions" << std::endl;
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
-DWORD64 Game::GetLocalPlayerPawn(ProcessHelper& memory)
-{
-	DWORD64 localPlayerPawn = NULL;
-    memory.ReadMemory(Globals::client_dll + Offsets::client_dll::MainOffsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
-	return localPlayerPawn; // Return the local player pawn address
+// Get local player pawn address
+uint64_t Game::GetLocalPlayerPawn() {
+    uint64_t localPlayerPawn = 0;
+    if (!Globals::processHelper->ReadMemory(Globals::client_dll + Offsets::client_dll::MainOffsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn))) {
+        std::cerr << "Failed to read local player pawn address" << std::endl;
+        return 0;
+    }
+    return localPlayerPawn;
 }
 
-bool Game::Update(ProcessHelper& memory) {
-    uint64_t localPlayerPawn = NULL;
-    int32_t health = NULL;
-    int32_t maxHealth = NULL;
-    uint8_t teamNum = NULL;
-    uint32_t flags = NULL;
-    Math::Vector3 position; // Changed to Vector3
+// Update game state
+bool Game::Update() {
+    uint64_t localPlayerPawn = 0;
+    int32_t health = 0;
+    int32_t maxHealth = 0;
+    uint8_t teamNum = 0;
+    uint32_t flags = 0;
+    Math::Vector3 position;
 
-    memory.ReadMemory(Globals::client_dll + Offsets::client_dll::MainOffsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn));
-    if (localPlayerPawn > 0) {
-        memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_iHealth, &health, sizeof(health));
-        memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_iMaxHealth, &maxHealth, sizeof(maxHealth));
-        memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_iTeamNum, &teamNum, sizeof(teamNum));
-        memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_fFlags, &flags, sizeof(flags));
-		memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::C_BasePlayerPawn::m_vOldOrigin, &position, sizeof(position));
+    if (!Globals::processHelper->ReadMemory(Globals::client_dll + Offsets::client_dll::MainOffsets::dwLocalPlayerPawn, &localPlayerPawn, sizeof(localPlayerPawn)) || localPlayerPawn == 0) {
+        std::cerr << "Failed to read local player pawn" << std::endl;
+        LocalPlayerPawn::address = 0;
+        LocalPlayerPawn::health = 0;
+        LocalPlayerPawn::maxHealth = 0;
+        LocalPlayerPawn::teamNum = 0;
+        LocalPlayerPawn::flags = 0;
+        LocalPlayerPawn::position = Math::Vector3();
+        return false;
+    }
 
-        Game::LocalPlayerPawn::address = localPlayerPawn;
-        Game::LocalPlayerPawn::health = health;
-        Game::LocalPlayerPawn::maxHealth = maxHealth;
-        Game::LocalPlayerPawn::teamNum = teamNum;
-        Game::LocalPlayerPawn::flags = flags;
-        Game::LocalPlayerPawn::position = position;
+    if (!Globals::processHelper->ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_iHealth, &health, sizeof(health)) ||
+        !Globals::processHelper->ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_iMaxHealth, &maxHealth, sizeof(maxHealth)) ||
+        !Globals::processHelper->ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_iTeamNum, &teamNum, sizeof(teamNum)) ||
+        !Globals::processHelper->ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_fFlags, &flags, sizeof(flags)) ||
+        !Globals::processHelper->ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::C_BasePlayerPawn::m_vOldOrigin, &position, sizeof(position))) {
+        std::cerr << "Failed to read local player data" << std::endl;
+        LocalPlayerPawn::address = 0;
+        LocalPlayerPawn::health = 0;
+        LocalPlayerPawn::maxHealth = 0;
+        LocalPlayerPawn::teamNum = 0;
+        LocalPlayerPawn::flags = 0;
+        LocalPlayerPawn::position = Math::Vector3();
+        return false;
     }
-    else {
-        Game::LocalPlayerPawn::address = NULL;
-        Game::LocalPlayerPawn::health = NULL;
-        Game::LocalPlayerPawn::maxHealth = NULL;
-        Game::LocalPlayerPawn::teamNum = NULL;
-        Game::LocalPlayerPawn::flags = NULL;
-        Game::LocalPlayerPawn::position = Math::Vector3();
-    }
-    return localPlayerPawn != 0; // Return true if local player pawn is valid
+
+    LocalPlayerPawn::address = localPlayerPawn;
+    LocalPlayerPawn::health = health;
+    LocalPlayerPawn::maxHealth = maxHealth;
+    LocalPlayerPawn::teamNum = teamNum;
+    LocalPlayerPawn::flags = flags;
+    LocalPlayerPawn::position = position;
+
+    return true;
 }
