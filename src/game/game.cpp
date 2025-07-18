@@ -44,21 +44,21 @@ bool Game::Update(ProcessHelper& memory) {
         memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::m_fFlags, &flags, sizeof(flags));
 		memory.ReadMemory(localPlayerPawn + Offsets::client_dll::C_BaseEntity::C_BasePlayerPawn::m_vOldOrigin, &position, sizeof(position));
 
-        GameVars::LocalPlayerPawn::address = localPlayerPawn;
-        GameVars::LocalPlayerPawn::health = health;
-        GameVars::LocalPlayerPawn::maxHealth = maxHealth;
-        GameVars::LocalPlayerPawn::teamNum = teamNum;
-        GameVars::LocalPlayerPawn::flags = flags;
-        GameVars::LocalPlayerPawn::position = position;
+        Game::LocalPlayerPawn::address = localPlayerPawn;
+        Game::LocalPlayerPawn::health = health;
+        Game::LocalPlayerPawn::maxHealth = maxHealth;
+        Game::LocalPlayerPawn::teamNum = teamNum;
+        Game::LocalPlayerPawn::flags = flags;
+        Game::LocalPlayerPawn::position = position;
     }
     // ... rest of the code
     else {
-        GameVars::LocalPlayerPawn::address = NULL;
-        GameVars::LocalPlayerPawn::health = NULL;
-        GameVars::LocalPlayerPawn::maxHealth = NULL;
-        GameVars::LocalPlayerPawn::teamNum = NULL;
-        GameVars::LocalPlayerPawn::flags = NULL;
-        GameVars::LocalPlayerPawn::position = Math::Vector3();
+        Game::LocalPlayerPawn::address = NULL;
+        Game::LocalPlayerPawn::health = NULL;
+        Game::LocalPlayerPawn::maxHealth = NULL;
+        Game::LocalPlayerPawn::teamNum = NULL;
+        Game::LocalPlayerPawn::flags = NULL;
+        Game::LocalPlayerPawn::position = Math::Vector3();
     }
     return localPlayerPawn != 0; // Return true if local player pawn is valid
 }
