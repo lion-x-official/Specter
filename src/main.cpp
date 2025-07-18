@@ -75,6 +75,7 @@ int main()
 
     // Game initialization
     logger.Log(LogLevel::INFO, L"Game", L"Game initialization...");
+
     if (!Game::Initialize())
     {
         logger.Log(LogLevel::ERR, L"Game", L"Failed to initialize game! Exiting...");
@@ -169,7 +170,7 @@ void UpdateThread() {
         Game::Update();
         EntityManager::UpdateEntityList();
         
-		logger.Log(LogLevel::DEBUG, L"UpdateThread", L"Vars updated");
+		//logger.Log(LogLevel::DEBUG, L"UpdateThread", L"Vars updated");
 
         // Sleep to reduce CPU usage
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
