@@ -19,4 +19,6 @@ public:
 	static bool getStatus() {
 		return Globals::triggerEnabled;
 	}
+
+	
 };

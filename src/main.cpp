@@ -174,6 +174,7 @@ void UpdateThread()
     Logger& logger = Logger::GetInstance();
     while (!GetAsyncKeyState(VK_F1))
     {
+        // Update Game Data
         Game::Update(*Globals::processHelper);
         EntityManager::UpdateEntityList(*Globals::processHelper);
         Trigger::Update(*Globals::processHelper);
