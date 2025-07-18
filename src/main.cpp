@@ -75,7 +75,7 @@ int main()
 
     // Game initialization
     logger.Log(LogLevel::INFO, L"Game", L"Game initialization...");
-    if (!Game::Initialize(memory))
+    if (!Game::Initialize())
     {
         logger.Log(LogLevel::ERR, L"Game", L"Failed to initialize game! Exiting...");
         ExitSpecter(logger);
@@ -83,7 +83,7 @@ int main()
 	}
 
     // Initialize entity list
-    if (!EntityManager::Initialize(memory))
+    if (!EntityManager::Initialize())
     {
         logger.Log(LogLevel::ERR, L"EntityManager", L"Failed to initialize entity manager! Exiting...");
         ExitSpecter(logger);
@@ -162,13 +162,12 @@ int main()
 }
 
 
-void UpdateThread()
-{
+void UpdateThread() {
     Logger& logger = Logger::GetInstance();
     while (!GetAsyncKeyState(VK_F1))
     {
-        Game::Update(*Globals::processHelper);
-        EntityManager::UpdateEntityList(*Globals::processHelper);
+        Game::Update();
+        EntityManager::UpdateEntityList();
         
 		logger.Log(LogLevel::DEBUG, L"UpdateThread", L"Vars updated");
 

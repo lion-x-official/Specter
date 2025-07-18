@@ -1,18 +1,23 @@
 #pragma once
 
 #include <Windows.h>
-
-#include "core/ProcessHelper.hpp"
 #include "utils/math.hpp"
 #include "valve/offsets.hpp"
 #include "utils/globals.hpp"
 
-static class Game{
+// Game class to manage game-related operations
+class Game {
 public:
-	static bool Initialize(ProcessHelper& memory);
-	static bool Update(ProcessHelper& memory);
-	static DWORD64 GetLocalPlayerPawn(ProcessHelper& memory);
+    // Initialize game with process helper
+    static bool Initialize();
 
+    // Update game state
+    static bool Update();
+
+    // Get local player pawn address
+    static uint64_t GetLocalPlayerPawn();
+
+    // Structure to hold local player pawn data
     struct LocalPlayerPawn {
         static inline uint64_t address{ 0 };
         static inline int32_t health{ 0 };

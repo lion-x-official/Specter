@@ -3,68 +3,53 @@
 #include <Windows.h>
 #include <vector>
 #include <cstdint>
-#include "core/ProcessHelper.hpp"  // Directly include ProcessHelper
-#include "utils/math.hpp"          // For Vector3
-#include "utils/globals.hpp"       // For global variables
+#include "utils/math.hpp"
+#include "utils/globals.hpp"
 #include "valve/offsets.hpp"
 
 // Maximum number of players in CS2
-constexpr uint8_t MAX_PLAYERS = 64;
+constexpr uint8_t MAX_PLAYERS = 32;
 
-namespace EntityVars {
-    // Structure to hold raw entity data
-    struct EntityData {
-        uint64_t pawnAddress{ 0 };       // Address of the pawn entity
-        uint64_t controllerAddress{ 0 }; // Address of the controller entity
-        int32_t health{ 0 };             // Current health of the entity
-        int32_t maxHealth{ 0 };          // Maximum health of the entity
-        uint8_t teamNum{ 0 };            // Team number of the entity
-        uint32_t flags{ 0 };             // Entity flags (e.g., on ground, crouched)
-        Math::Vector3 position;          // Entity position (m_vOldOrigin)
-    };
-}
+// Structure to hold all entity data
+struct EntityData {
+    uint64_t controllerAddress{ 0 };
+    uint64_t pawnAddress{ 0 };
+    int32_t health{ 0 };
+    int32_t maxHealth{ 0 };
+    uint8_t teamNum{ 0 };
+    uint32_t flags{ 0 };
+    Math::Vector3 position;
+    uint32_t pawnHandle{ 0 };
+    // Add new fields here as needed
+};
 
-// Class representing a single entity
+// Entity class to encapsulate entity data
 class Entity {
 public:
-    Entity(const EntityVars::EntityData& data) : data_(data) {}
+    // Constructor to initialize entity with data
+    Entity(const EntityData& data) : data_(data) {}
 
-    // Get health of the entity
-    int32_t GetHealth() const { return data_.health; }
+    // Get entity data
+    const EntityData& GetData() const { return data_; }
 
-    // Get maximum health of the entity
-    int32_t GetMaxHealth() const { return data_.maxHealth; }
+    // Check if the player is alive
+    bool IsAlive() const { return data_.health > 0; }
 
-    // Get team number of the entity
-    uint8_t GetTeamNum() const { return data_.teamNum; }
-
-    // Get entity flags
-    uint32_t GetFlags() const { return data_.flags; }
-
-    // Get position of the entity
-    Math::Vector3 GetPosition() const { return data_.position; }
-
-    // Get pawn address
-    uint64_t GetPawnAddress() const { return data_.pawnAddress; }
-
-    // Get controller address
-    uint64_t GetControllerAddress() const { return data_.controllerAddress; }
-
-    // Check if entity is valid
-    bool IsValid() const { return data_.pawnAddress != 0 && data_.health > 0; }
+    // Get entity ID index
+    uint8_t GetEntIDIndex() const { return static_cast<uint8_t>(data_.pawnAddress & 0x7FFF); }
 
 private:
-    EntityVars::EntityData data_; // Raw entity data
+    EntityData data_;
 };
 
 // Class to manage the list of entities
 class EntityManager {
 public:
     // Initialize entity system
-    static bool Initialize(ProcessHelper& memory);
+    static bool Initialize();
 
     // Update the entity list by reading from game memory
-    static bool UpdateEntityList(ProcessHelper& memory);
+    static bool UpdateEntityList();
 
     // Get the list of entities
     static const std::vector<Entity>& GetEntities();
